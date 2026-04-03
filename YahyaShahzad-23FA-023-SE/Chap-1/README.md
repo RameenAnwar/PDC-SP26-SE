@@ -1,5 +1,15 @@
 # Chapter 01: Fundamentals of Parallel Computing in Python
 
+[![Course](https://img.shields.io/badge/Course-Parallel%20%26%20Distributed%20Computing-blue)](#)
+[![Language](https://img.shields.io/badge/Language-Python-3776AB)](#)
+[![Level](https://img.shields.io/badge/Level-Intermediate-orange)](#)
+[![Focus](https://img.shields.io/badge/Focus-Parallel%20Computing-red)](#)
+[![Author](https://img.shields.io/badge/Author-Yahya%20Shahzad-green)](#)
+
+---
+
+# Chapter 01: Fundamentals of Parallel Computing in Python
+
 ##  Course Information
 **Course:** Parallel and Distributed Computing (PDC) 
 **Student Name:** Yahya Shahzad 

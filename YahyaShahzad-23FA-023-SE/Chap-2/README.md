@@ -1,4 +1,4 @@
-# Chapter 01: Fundamentals of Parallel Computing in Python
+# Chapter 02: Core Threading & Synchronization Mechanisms in Python
 
 [![Course](https://img.shields.io/badge/Course-Parallel%20%26%20Distributed%20Computing-blue)](#)
 [![Language](https://img.shields.io/badge/Language-Python-3776AB)](#)
@@ -8,100 +8,160 @@
 
 ---
 
-## Course Information
+# Chapter 02: Core Threading & Synchronization Mechanisms in Python
+
+##  Course Information
 **Course:** Parallel and Distributed Computing (PDC) 
 **Student Name:** Yahya Shahzad 
-**Roll No:** 23FA-023-SE 
+**Roll No:** 23FA-023-SE
 
 ---
 
 ## Overview
 
-This directory presents the foundational concepts and implementations of Parallel and Distributed Computing using Python. The objective of this chapter is to understand how modern computing systems achieve higher performance by executing tasks concurrently instead of sequentially.
+Welcome to Chapter 02 of the Parallel and Distributed Computing (PDC) lab series. This chapter focuses on building a deep, practical understanding of Python’s threading system and the synchronization tools required to coordinate concurrent execution safely.
 
-The content is divided into two major sections:
-- Conceptual understanding of parallel computing principles 
-- Practical implementation using Python programs 
+Unlike simple multithreading examples, this chapter explores both low-level thread construction and advanced synchronization patterns, showing how Python manages shared resources, avoids race conditions, and enables structured concurrency.
 
----
+The chapter is organized into two major parts:
 
-## Contents
-
-### Part 1: Conceptual Foundations
-
-This section explains the core ideas required to understand parallel computing systems.
-
-- Importance of Parallel and Distributed Computing 
-- Evolution from single-core to multi-core systems 
-- Difference between:
-  - Serial Execution 
-  - Concurrency (Multithreading) 
-  - Parallelism (Multiprocessing) 
-- Memory sharing models:
-  - Threads vs Processes 
-- Python limitation: Global Interpreter Lock (GIL) 
-- Performance concepts like overhead and scalability 
+- Part 1: Fundamental concepts of threading behavior and synchronization theory  
+- Part 2: Hands-on Python implementations demonstrating real-world thread coordination patterns  
 
 ---
 
-### Part 2: Practical Implementation
+## Table of Contents
 
-This section includes Python scripts that demonstrate different execution models using the same workload.
+### Part 1: Theoretical Foundations
+- Thread Lifecycle & Execution Model  
+- Shared Memory in Multithreading  
+- Race Conditions and Critical Sections  
+- Synchronization Primitives Overview  
+- Locks vs RLocks (Re-entrant Locks)  
+- Semaphores and Resource Limiting  
+- Events and Condition-based Signaling  
+- Producer–Consumer Architecture  
 
-#### Workload Description
-A CPU-intensive function repeatedly generates random values and stores them in a list. This helps analyze performance differences between execution techniques.
-
----
-
-## Implementations
-
-### Serial Execution
-File: `serial_execution.py`
-
-- Runs tasks one after another  
-- Uses a single CPU core  
-- Acts as a baseline for comparison  
-
-Result: Predictable but slower performance  
-
----
-
-### Multithreading
-File: `multithreading.py`
-
-- Uses multiple threads within one process  
-- Shares memory between threads  
-- Limited by Python’s GIL for CPU-bound tasks  
-
-Result: Slight improvement or sometimes slower due to context switching  
+### Part 2: Practical Implementation Modules
+- Basic Thread Class Design  
+- Thread Identification and Execution Flow  
+- Lock-Based Synchronization Examples  
+- Recursive Locking with RLock  
+- Event Signaling Between Threads  
+- Condition Variables for Controlled Execution  
+- Semaphore-based Resource Control  
+- Multi-thread Execution Patterns  
 
 ---
 
-### Multiprocessing
-File: `multiprocessing.py`
+## PART 1: THEORETICAL FOUNDATIONS
 
-- Uses multiple independent processes  
-- Each process runs on a separate CPU core  
-- Avoids GIL limitations  
+### 1. Threading and Shared Execution Environment
 
-Result: Significant performance improvement  
+In Python, threads run inside a single process and share the same memory space. This enables fast communication but introduces serious risks when multiple threads modify shared variables simultaneously.
 
----
+Key Problem:
+- Threads execute unpredictably due to CPU scheduling  
+- Shared variables may be updated inconsistently  
 
-## Key Observations
-
-- Parallel execution improves performance for heavy workloads  
-- Multithreading is not efficient for CPU-bound tasks in Python  
-- Multiprocessing is the best approach for utilizing multi-core systems  
-- Overhead exists when creating threads/processes  
+Critical Section:
+A section of code where shared resources are accessed. Without control mechanisms, this leads to inconsistent program states and unpredictable outputs.
 
 ---
 
-## Additional Files
+### 2. Synchronization Mechanisms
 
-- [`classes.py`](./classes.py) → Object-oriented programming basics  
-- [`lists.py`](./lists.py) → List operations  
-- [`flow.py`](./flow.py) → Control flow examples  
-- [`file.py`](./file.py) → File handling  
-- [`dir.py`](./dir.py) → Directory handling  
-- [`do_something.py`](./do_something.py) → Core workload function  
+#### Locks (Mutex)
+A Lock ensures that only one thread executes a critical section at a time. Other threads are blocked until the lock is released.
+
+#### RLock (Re-entrant Lock)
+An advanced lock that allows the same thread to acquire the lock multiple times without deadlocking. Useful in recursive or nested function calls.
+
+#### Events
+Events act as signaling flags between threads. One thread signals completion or readiness, while others wait until the signal is triggered.
+
+#### Conditions
+Condition variables combine locking and signaling, allowing threads to wait until a specific state is met before continuing execution.
+
+#### Semaphores
+A Semaphore controls access to a resource pool using a counter instead of a binary lock. Example: allowing N threads to access a limited resource simultaneously.
+
+---
+
+### 3. Thread Communication using Queue
+
+The Queue module provides a safe way for threads to exchange data.
+
+Producer–Consumer Model:
+- Producers generate data and insert it into the queue  
+- Consumers retrieve and process data safely  
+- Queue internally handles locking and synchronization  
+
+This eliminates the need for manual lock management in many cases.
+
+---
+
+## PART 2: PRACTICAL IMPLEMENTATION MODULES
+
+### 4. Basic Thread Execution Model
+File: `Thread_definition.py`  
+Introduces basic thread creation using Python’s threading system.
+
+### 5. Thread Naming & Class-Based Execution
+File: `Thread_name_and_processes.py`  
+Improves traceability using thread identifiers.
+
+### 6. Custom Thread Class Design
+File: `MyThreadClass.py`  
+Object-oriented thread implementation using class extension.
+
+### 7. Lock-Based Synchronization
+Files:
+- `MyThreadClass_lock.py`  
+- `MyThreadClass_lock_2.py`  
+- `Rlock.py`  
+
+Demonstrates mutual exclusion and recursive locking.
+
+### 8. Event-Based Thread Coordination
+File: `Event.py`  
+Thread signaling and coordination using events.
+
+### 9. Condition Variable Synchronization
+File: `Condition.py`  
+Threads wait for shared-state conditions.
+
+### 10. Semaphore-Based Resource Control
+File: `Semaphore.py`  
+Controls access to limited resources using counters.
+
+### 11. Threading with Queue (Producer–Consumer System)
+File: `Threading_with_queue.py`  
+Safe communication between threads using Queue.
+
+### 12. Thread Execution Behavior Analysis
+File: `Thread_determine.py`  
+Shows unpredictability of thread scheduling.
+
+### 13. Thread Lifecycle & Identity Tracking
+Reinforces:
+- Thread start/join behavior  
+- Execution lifecycle  
+- Scheduling unpredictability  
+
+---
+
+## Execution Guide
+
+Run any script using:
+
+```bash
+python Thread_definition.py
+python MyThreadClass.py
+python MyThreadClass_lock.py
+python MyThreadClass_lock_2.py
+python Rlock.py
+python Event.py
+python Condition.py
+python Semaphore.py
+python Threading_with_queue.py
