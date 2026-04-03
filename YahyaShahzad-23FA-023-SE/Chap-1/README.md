@@ -8,8 +8,6 @@
 
 ---
 
-# Chapter 01: Fundamentals of Parallel Computing in Python
-
 ##  Course Information
 **Course:** Parallel and Distributed Computing (PDC) 
 **Student Name:** Yahya Shahzad 

@@ -8,8 +8,6 @@
 
 ---
 
-# Chapter 02: Core Threading & Synchronization Mechanisms in Python
-
 ##  Course Information
 **Course:** Parallel and Distributed Computing (PDC) 
 **Student Name:** Yahya Shahzad 
