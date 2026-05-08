@@ -124,9 +124,9 @@ graph TD
     R2["Rank 2"]
     R3["Rank 3"]
     
-    Root -->|Copies [A]| R1
-    Root -->|Copies [A]| R2
-    Root -->|Copies [A]| R3
+    Root -->|"Copies [A]"| R1
+    Root -->|"Copies [A]"| R2
+    Root -->|"Copies [A]"| R3
 ```
 
 #### Scatter
@@ -140,10 +140,10 @@ graph TD
     R2["Rank 2"]
     R3["Rank 3"]
     
-    Root -->|Sends [A]| R0
-    Root -->|Sends [B]| R1
-    Root -->|Sends [C]| R2
-    Root -->|Sends [D]| R3
+    Root -->|"Sends [A]"| R0
+    Root -->|"Sends [B]"| R1
+    Root -->|"Sends [C]"| R2
+    Root -->|"Sends [D]"| R3
 ```
 
 #### Gather
