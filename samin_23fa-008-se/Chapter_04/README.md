@@ -164,7 +164,6 @@ flowchart LR
 
 ## 💀 Deadlock Problem — Kya hota hai?
 
-```mermaid
 sequenceDiagram
     participant P1 as Process 1
     participant P5 as Process 5
@@ -176,13 +175,12 @@ sequenceDiagram
     P5->>P5: data_send = "b"
 
     rect rgb(255, 200, 200)
-        Note over P1,P5: 🔴 DEADLOCK ZONE
-        P1-->>P5: ❌ recv(from P5) — BLOCKS
+        Note over P1,P5: DEADLOCK ZONE
+        P1-->>P5: recv(from P5) - BLOCKS
         P5-->>P5: send("b", to P1) in queue
     end
 
-    Note over P1,P5: ❌ Both waiting forever\nP1 waits for recv → P5 waits for send completion
-```
+    Note over P1,P5: Both waiting forever - P1 waits for recv, P5 waits for send completion
 
 | Problem | Cause | Fix |
 |---------|-------|-----|
