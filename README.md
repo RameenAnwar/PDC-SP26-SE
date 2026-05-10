@@ -1,1 +1,1 @@
-# PDC-SP26-SE
+# Chapter04 - Python Parallel Programming
