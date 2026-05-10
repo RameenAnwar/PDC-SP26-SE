@@ -164,6 +164,7 @@ flowchart LR
 
 ## 💀 Deadlock Problem — Kya hota hai?
 
+```mermaid
 sequenceDiagram
     participant P1 as Process 1
     participant P5 as Process 5
@@ -175,12 +176,13 @@ sequenceDiagram
     P5->>P5: data_send = "b"
 
     rect rgb(255, 200, 200)
-        Note over P1,P5: DEADLOCK ZONE
-        P1-->>P5: recv(from P5) - BLOCKS
+        Note over P1,P5: 🔴 DEADLOCK ZONE
+        P1-->>P5: ❌ recv(from P5) — BLOCKS
         P5-->>P5: send("b", to P1) in queue
     end
 
-    Note over P1,P5: Both waiting forever - P1 waits for recv, P5 waits for send completion
+    Note over P1,P5: ❌ Both waiting forever\nP1 waits for recv → P5 waits for send completion
+```
 
 | Problem | Cause | Fix |
 |---------|-------|-----|
@@ -190,28 +192,31 @@ sequenceDiagram
 
 ```mermaid
 flowchart LR
-    subgraph WRONG ["❌ Deadlock — Wrong Order"]
-        direction TB
-        P1W[Process 1\nrecv(from 5) 🔒\nwaiting forever...]
-        P5W[Process 5\nsend(to 1) ⏳\nqueued, no receiver yet\nrecv(from 1) 🔒\nwaiting forever...]
-        P1W -.->|blocked| P5W
-        P5W -.->|blocked| P1W
-    end
 
-    subgraph RIGHT ["✅ Correct Order — No Deadlock"]
-        direction TB
-        P1R[Process 1\nsend(to 5) ✅\nrecv(from 5) ✅]
-        P5R[Process 5\nrecv(from 1) ✅\nsend(to 1) ✅]
-        P1R -->|data flows| P5R
-        P5R -->|data flows| P1R
-    end
+subgraph WRONG["Deadlock - Wrong Order"]
+    direction TB
+    P1W["Process 1 recv(from 5) waiting forever"]
+    P5W["Process 5 send(to 1) queued recv(from 1) waiting forever"]
 
-    style WRONG fill:#1a0a0a,stroke:#ef4444,color:#fca5a5
-    style RIGHT fill:#022c1a,stroke:#10b981,color:#6ee7b7
-    style P1W fill:#7f1d1d,color:#fca5a5,stroke:#ef4444
-    style P5W fill:#7f1d1d,color:#fca5a5,stroke:#ef4444
-    style P1R fill:#14532d,color:#86efac,stroke:#22c55e
-    style P5R fill:#14532d,color:#86efac,stroke:#22c55e
+    P1W -.->|blocked| P5W
+    P5W -.->|blocked| P1W
+end
+
+subgraph RIGHT["Correct Order - No Deadlock"]
+    direction TB
+    P1R["Process 1 send(to 5) recv(from 5)"]
+    P5R["Process 5 recv(from 1) send(to 1)"]
+
+    P1R -->|data flows| P5R
+    P5R -->|data flows| P1R
+end
+
+style WRONG fill:#1a0a0a,stroke:#ef4444,color:#fca5a5
+style RIGHT fill:#022c1a,stroke:#10b981,color:#6ee7b7
+style P1W fill:#7f1d1d,color:#fca5a5,stroke:#ef4444
+style P5W fill:#7f1d1d,color:#fca5a5,stroke:#ef4444
+style P1R fill:#14532d,color:#86efac,stroke:#22c55e
+style P5R fill:#14532d,color:#86efac,stroke:#22c55e
 ```
 
 ---
