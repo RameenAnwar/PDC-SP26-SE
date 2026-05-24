@@ -1,5 +1,5 @@
 # 🖧 Chapter 06 – Distributed Computing Experiments
-📊 [View Visual Report](./distributed_computing_chapter06.html)
+📊 [View Visual Report](https://samin949.github.io/PDC-SP26-SE/distributed_computing_chapter06.html)
 <br>
 This repository contains practical experiments for **Chapter 06: Distributed Computing**, covering three major paradigms in Python:
 
