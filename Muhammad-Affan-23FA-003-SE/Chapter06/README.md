@@ -65,12 +65,12 @@ graph TD
     classDef serverClass fill:#E8F5E9,stroke:#4CAF50,stroke-width:2px,color:#1B5E20;
     classDef dbClass fill:#EDE7F6,stroke:#5E35B1,stroke-width:2px,color:#4A148C;
 
-    User([👤 User Client Application]) <--> |HTTP / TCP| LoadBalancer{🔀 Load Balancer}
-    LoadBalancer <--> |Route Request| Server1[🖥️ Server Node A]
-    LoadBalancer <--> |Route Request| Server2[🖥️ Server Node B]
-    LoadBalancer <--> |Route Request| Server3[🖥️ Server Node C]
+    User([User Client Application]) <--> |HTTP / TCP| LoadBalancer{Load Balancer}
+    LoadBalancer <--> |Route Request| Server1[Server Node A]
+    LoadBalancer <--> |Route Request| Server2[Server Node B]
+    LoadBalancer <--> |Route Request| Server3[Server Node C]
     
-    Server1 <--> |Fetch / Write| DB[(💾 Shared Central Database)]
+    Server1 <--> |Fetch / Write| DB[(Shared Central Database)]
     Server2 <--> |Fetch / Write| DB
     Server3 <--> |Fetch / Write| DB
 
@@ -98,8 +98,8 @@ In a client-server architecture, tasks or workloads are partitioned between the 
 ```mermaid
 sequenceDiagram
     autonumber
-    actor Client as 💻 Client (Requestor)
-    actor Server as 🖥️ Server (Provider)
+    actor Client as Client (Requestor)
+    actor Server as Server (Provider)
     
     Note over Client,Server: Connection established via TCP/IP
     Client->>Server: 1. Send Service Request (e.g., Get Resource)
@@ -123,8 +123,8 @@ graph LR
     classDef lClass fill:#FFFDE7,stroke:#FDD835,stroke-width:2px,color:#F57F17;
     classDef dClass fill:#FFEBEE,stroke:#E53935,stroke-width:2px,color:#B71C1C;
 
-    ClientTier[🎨 Presentation Tier<br/>Web Browser / GUI Client] <--> AppTier[⚙️ Application Logic Tier<br/>Python Server / APIs]
-    AppTier <--> DataTier[💾 Data Storage Tier<br/>Databases / File System]
+    ClientTier[Presentation Tier<br/>Web Browser / GUI Client] <--> AppTier[Application Logic Tier<br/>Python Server / APIs]
+    AppTier <--> DataTier[Data Storage Tier<br/>Databases / File System]
 
     class ClientTier pClass;
     class AppTier lClass;
@@ -145,8 +145,8 @@ This implementation demonstrates a simple server that listens on a port, accepts
 ```mermaid
 sequenceDiagram
     autonumber
-    participant Server as 🖥️ Server (server.py)
-    participant Client as 💻 Client (client.py)
+    participant Server as Server (server.py)
+    participant Client as Client (client.py)
     
     Note over Server: 1. Bind to Local Host:9999 & Listen
     Client->>Server: 2. TCP Connection Request (socket.connect)
@@ -176,8 +176,8 @@ This implementation demonstrates sending a file (`mytext.txt`) from a server to 
 ```mermaid
 sequenceDiagram
     autonumber
-    participant Server as 🖥️ Server (server2.py)
-    participant Client as 💻 Client (client2.py)
+    participant Server as Server (server2.py)
+    participant Client as Client (client2.py)
     
     Note over Server: 1. Listen on Port 60000
     Client->>Server: 2. Connects & Sends 'HelloServer!' message
@@ -211,9 +211,9 @@ graph LR
     classDef workerClass fill:#FFF3E0,stroke:#FF9800,stroke-width:2px,color:#E65100;
     classDef backendClass fill:#EDE7F6,stroke:#673AB7,stroke-width:2px,color:#311B92;
 
-    Client[💻 Client App<br/>addTask_main.py] -->|1. Delay/Apply Async| Broker{🔀 Message Broker<br/>RabbitMQ / Redis}
-    Broker -->|2. Pull Tasks| Worker[⚙️ Celery Worker<br/>addTask.py]
-    Worker -->|3. Store Results| Backend[(💾 Result Backend<br/>Database / Redis)]
+    Client[Client App<br/>addTask_main.py] -->|1. Delay/Apply Async| Broker{Message Broker<br/>RabbitMQ / Redis}
+    Broker -->|2. Pull Tasks| Worker[Celery Worker<br/>addTask.py]
+    Worker -->|3. Store Results| Backend[(Result Backend<br/>Database / Redis)]
 
     class Client clientClass;
     class Broker brokerClass;
@@ -255,9 +255,9 @@ On Windows, Celery needs a compatible event pool execution method. You can run C
 ```mermaid
 sequenceDiagram
     autonumber
-    participant NameServer as 🔍 Pyro Name Server (pyro4-ns)
-    participant Daemon as 🖥️ Server Daemon (pyro_server.py)
-    participant Client as 💻 Client Proxy (pyro_client.py)
+    participant NameServer as Pyro Name Server (pyro4-ns)
+    participant Daemon as Server Daemon (pyro_server.py)
+    participant Client as Client Proxy (pyro_client.py)
     
     Note over NameServer: Start Name Server (pyro4-ns)
     Daemon->>NameServer: 1. Register "server" object with its URI
@@ -304,9 +304,9 @@ graph TD
     classDef s2Class fill:#FFF3E0,stroke:#FF9800,stroke-width:2px,color:#E65100;
     classDef s3Class fill:#EDE7F6,stroke:#673AB7,stroke-width:2px,color:#311B92;
 
-    Client[💻 Client client_chain.py] -->|1. Process Msg| Server1[🖥️ Server 1]
-    Server1 -->|2. Forward Msg| Server2[🖥️ Server 2]
-    Server2 -->|3. Forward Msg| Server3[🖥️ Server 3]
+    Client[Client client_chain.py] -->|1. Process Msg| Server1[Server 1]
+    Server1 -->|2. Forward Msg| Server2[Server 2]
+    Server2 -->|3. Forward Msg| Server3[Server 3]
     Server3 -->|4. Detect Loop & Complete Chain| Server1
     Server1 -->|5. Return Accumulated Result Array| Client
 
