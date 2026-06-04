@@ -27,32 +27,34 @@ Parallel computing is the simultaneous execution of multiple computations to sol
 - **Throughput:** Parallel computing increases system throughput, allowing more tasks to be completed in a given time period.
 
 ```mermaid
-%%{init: {'theme': 'base', 'themeVariables': { 'lineColor': '#263238', 'primaryColor': '#ECEFF1' }}}%%
+%%{init: {'theme': 'base', 'themeVariables': { 'lineColor': '#475569', 'primaryColor': '#f8fafc', 'primaryTextColor': '#0f172a', 'primaryBorderColor': '#cbd5e1' }}}%%
 flowchart TD
-    %% Pro Max Dashboard: Serial vs Parallel
-    classDef serial fill:#FFEBEE,stroke:#D32F2F,stroke-width:4px,color:#B71C1C,font-weight:900
-    classDef parallel fill:#E0F2F1,stroke:#00796B,stroke-width:4px,color:#004D40,font-weight:900
-    classDef compute fill:#FFFFFF,stroke:#455A64,stroke-width:2px,color:#263238,font-weight:bold
+    %% Premium Styled Serial vs Parallel Comparison
+    classDef serial fill:#ffe4e6,stroke:#e11d48,stroke-width:2px,color:#4c0519,font-weight:bold
+    classDef parallel fill:#d1fae5,stroke:#059669,stroke-width:2px,color:#064e3b,font-weight:bold
+    classDef core fill:#e0f2fe,stroke:#0284c7,stroke-width:2px,color:#0c4a6e,font-weight:bold
+    classDef task fill:#f1f5f9,stroke:#64748b,stroke-width:1.5px,color:#0f172a
 
-    subgraph Dashboard [PARA-SYNC PERFORMANCE COMPARISON]
+    subgraph Dashboard ["⚡ Parallel vs Serial Performance Dashboard"]
         direction TB
-        subgraph S_TRACK [SINGLE-CORE SERIAL PIPELINE]
+        
+        subgraph S_TRACK ["🔴 Single-Core Serial Pipeline"]
             direction LR
             S1[Task 1] ==> S2[Task 2] ==> S3[Task 3] ==> S4[Task 4]
         end
         
-        subgraph P_TRACK [MULTI-CORE PARALLEL TRACKS]
+        subgraph P_TRACK ["🟢 Multi-Core Parallel Tracks"]
             direction LR
-            subgraph CORE_A [Core 1]
+            subgraph CORE_A ["💻 Core 1"]
                 T1[Parallel Task A]
             end
-            subgraph CORE_B [Core 2]
+            subgraph CORE_B ["💻 Core 2"]
                 T2[Parallel Task B]
             end
-            subgraph CORE_C [Core 3]
+            subgraph CORE_C ["💻 Core 3"]
                 T3[Parallel Task C]
             end
-            subgraph CORE_D [Core 4]
+            subgraph CORE_D ["💻 Core 4"]
                 T4[Parallel Task D]
             end
         end
@@ -60,7 +62,8 @@ flowchart TD
 
     class S_TRACK serial
     class P_TRACK parallel
-    class S1,S2,S3,S4,T1,T2,T3,T4,CORE_A,CORE_B,CORE_C,CORE_D compute
+    class CORE_A,CORE_B,CORE_C,CORE_D core
+    class S1,S2,S3,S4,T1,T2,T3,T4 task
 ```
 
 ## 2. Flynn's Taxonomy
@@ -88,40 +91,42 @@ Flynn's Taxonomy classifies computer architectures based on the number of instru
 - **Example:** Multi-core CPUs, distributed computing clusters, and modern supercomputers.
 
 ```mermaid
-%%{init: {'theme': 'base', 'themeVariables': { 'lineColor': '#37474F', 'primaryColor': '#F5F5F5' }}}%%
+%%{init: {'theme': 'base', 'themeVariables': { 'lineColor': '#475569', 'primaryColor': '#f8fafc', 'primaryTextColor': '#0f172a', 'primaryBorderColor': '#cbd5e1' }}}%%
 flowchart TD
-    %% Pro Max Flynn's Matrix Visualization
-    classDef header fill:#1A237E,stroke:#0D47A1,stroke-width:3px,color:#FFFFFF,font-weight:bold
-    classDef sisd fill:#FFCDD2,stroke:#B71C1C,stroke-width:3px,color:#B71C1C,font-weight:bold
-    classDef simd fill:#C8E6C9,stroke:#1B5E20,stroke-width:3px,color:#1B5E20,font-weight:bold
-    classDef misd fill:#BBDEFB,stroke:#0D47A1,stroke-width:3px,color:#0D47A1,font-weight:bold
-    classDef mimd fill:#FFE0B2,stroke:#E65100,stroke-width:4px,color:#E65100,font-weight:bold
+    %% Premium Styled Flynn's Taxonomy
+    classDef title fill:#e0e7ff,stroke:#4f46e5,stroke-width:2.5px,color:#1e1b4b,font-weight:bold
+    classDef axis fill:#f1f5f9,stroke:#94a3b8,stroke-width:1.5px,color:#334155
+    classDef sisd fill:#fee2e2,stroke:#ef4444,stroke-width:2px,color:#7f1d1d,font-weight:bold
+    classDef simd fill:#dcfce7,stroke:#22c55e,stroke-width:2px,color:#14532d,font-weight:bold
+    classDef misd fill:#e0f2fe,stroke:#0ea5e9,stroke-width:2px,color:#0c4a6e,font-weight:bold
+    classDef mimd fill:#fef3c7,stroke:#f59e0b,stroke-width:2.5px,color:#78350f,font-weight:bold
 
-    TITLE[FLYNN'S CLASSIFICATION MATRIX]
+    TITLE["📊 Flynn's Classification Matrix"]
 
-    subgraph InstructionAxis [INSTRUCTION STREAM]
+    subgraph InstructionAxis ["Instruction Stream"]
         direction TB
-        SingleI[SINGLE STREAM]
-        MultiI[MULTIPLE STREAMS]
+        SingleI["Single Stream"]
+        MultiI["Multiple Streams"]
     end
 
-    subgraph DataAxis [DATA STREAM]
+    subgraph DataAxis ["Data Stream"]
         direction LR
-        SingleD[SINGLE STREAM]
-        MultiD[MULTIPLE STREAMS]
+        SingleD["Single Stream"]
+        MultiD["Multiple Streams"]
     end
 
-    Matrix_SISD[SISD: Traditional Computing]
-    Matrix_SIMD[SIMD: Vector/GPU Processing]
-    Matrix_MISD[MISD: Redundant/Fault-Tolerant]
-    Matrix_MIMD[MIMD: Multi-Core/Cluster]
+    Matrix_SISD["SISD: Single Instruction Single Data (Traditional CPU)"]
+    Matrix_SIMD["SIMD: Single Instruction Multiple Data (Vector/GPU)"]
+    Matrix_MISD["MISD: Multiple Instruction Single Data (Fault-Tolerant)"]
+    Matrix_MIMD["MIMD: Multiple Instruction Multiple Data (Multi-Core)"]
 
     SingleI --- SingleD --> Matrix_SISD
     SingleI --- MultiD --> Matrix_SIMD
     MultiI --- SingleD --> Matrix_MISD
     MultiI --- MultiD --> Matrix_MIMD
 
-    class TITLE header
+    class TITLE title
+    class SingleI,MultiI,SingleD,MultiD axis
     class Matrix_SISD sisd
     class Matrix_SIMD simd
     class Matrix_MISD misd
@@ -150,52 +155,52 @@ Memory organization defines how processors access memory in a parallel system.
 - **Characteristics:** Designed for high-performance computing. Processors are interconnected via high-speed networks.
 - **Use Case:** Scientific computing, big data analytics, and large-scale simulations.
 
-### 3.4 Clusters of Workstations
+### 3.5 Clusters of Workstations
 - **Definition:** A collection of independent, commodity computers (workstations or servers) connected via a network to work as a single parallel system.
 - **Characteristics:** Cost-effective alternative to specialized supercomputers. Often use message-passing libraries like MPI.
 - **Challenge:** Network latency and bandwidth can become bottlenecks.
 
-### 3.5 Heterogeneous Architectures
+### 3.6 Heterogeneous Architectures
 - **Definition:** Systems that combine different types of processing units, such as CPUs, GPUs, FPGAs, or specialized accelerators.
 - **Characteristics:** Different units excel at different tasks (e.g., CPUs for control logic, GPUs for parallel data processing).
 - **Programming Challenge:** Requires managing data movement and task allocation across different architectures with different instruction sets and memory spaces.
 
 ```mermaid
-%%{init: {'theme': 'base', 'themeVariables': { 'lineColor': '#455A64', 'primaryColor': '#F5F5F5' }}}%%
+%%{init: {'theme': 'base', 'themeVariables': { 'lineColor': '#475569', 'primaryColor': '#f8fafc', 'primaryTextColor': '#0f172a', 'primaryBorderColor': '#cbd5e1' }}}%%
 flowchart LR
-    %% Pro Max Memory Architecture Schematic
-    classDef compute fill:#E3F2FD,stroke:#1565C0,stroke-width:2px,color:#0D47A1,font-weight:bold
-    classDef storage fill:#E8F5E9,stroke:#2E7D32,stroke-width:3px,color:#1B5E20,font-weight:bold
-    classDef interconnect fill:#FFF3E0,stroke:#E65100,stroke-width:2px,color:#795548,font-weight:bold
+    %% Premium Shared vs Distributed Memory
+    classDef proc fill:#e0f2fe,stroke:#0ea5e9,stroke-width:2px,color:#0369a1,font-weight:bold
+    classDef mem fill:#dcfce7,stroke:#22c55e,stroke-width:2px,color:#15803d,font-weight:bold
+    classDef bus fill:#fef3c7,stroke:#f59e0b,stroke-width:2px,color:#b45309,font-weight:bold
 
-    subgraph SHARED_SCHEMA [SHARED ADDRESS ARCHITECTURE]
+    subgraph SHARED_SCHEMA ["🧠 Shared Address Architecture"]
         direction TB
-        subgraph COMPUTE_POOL [CPU RESOURCES]
+        subgraph COMPUTE_POOL ["Processors"]
             C1(Processor 1) ~~~ C2(Processor 2) ~~~ C3(Processor n)
         end
-        BUS{{HIGH-SPEED SYSTEM BUS}}
-        RAM[(UNIFIED SHARED MEMORY)]
+        BUS{{"🚀 High-Speed System Bus"}}
+        RAM[("💾 Unified Shared Memory")]
         
         COMPUTE_POOL === BUS === RAM
     end
 
-    subgraph DIST_SCHEMA [DISTRIBUTED MEMORY SCHEMATIC]
+    subgraph DIST_SCHEMA ["🌐 Distributed Memory Schematic"]
         direction TB
-        subgraph NODE_1 [Computing Node 1]
-            P1(CPU) --- M1[(Local RAM)]
+        subgraph NODE_1 ["Computing Node 1"]
+            P1(CPU) --- M1[("💾 Local RAM")]
         end
-        subgraph NODE_2 [Computing Node 2]
-            P2(CPU) --- M2[(Local RAM)]
+        subgraph NODE_2 ["Computing Node 2"]
+            P2(CPU) --- M2[("💾 Local RAM")]
         end
+        NET{{"🔌 Network Interconnect"}}
         
         NET <---> NODE_1
         NET <---> NODE_2
-        NET{{NETWORK INTERCONNECT}}
     end
 
-    class C1,C2,C3,P1,P2 compute
-    class RAM,M1,M2 storage
-    class BUS,NET interconnect
+    class C1,C2,C3,P1,P2 proc
+    class RAM,M1,M2 mem
+    class BUS,NET bus
 ```
 
 ## 4. Parallel Programming Models
@@ -224,40 +229,40 @@ A programming model defines how parallelism is expressed and managed in software
 - **API Examples:** OpenMP parallel for directives, CUDA kernels, NumPy vectorized operations.
 
 ```mermaid
-%%{init: {'theme': 'base', 'themeVariables': { 'lineColor': '#455A64', 'primaryColor': '#F5F5F5' }}}%%
+%%{init: {'theme': 'base', 'themeVariables': { 'lineColor': '#475569', 'primaryColor': '#f8fafc', 'primaryTextColor': '#0f172a', 'primaryBorderColor': '#cbd5e1' }}}%%
 flowchart TD
-    %% Pro Max Programming Models
-    classDef space fill:#FFF3E0,stroke:#EF6C00,stroke-width:2px,color:#E65100,font-weight:bold
-    classDef proc fill:#E0F2F1,stroke:#00796B,stroke-width:2px,color:#004D40,font-weight:bold
-    classDef var fill:#FFFFFF,stroke:#455A64,stroke-width:1.5px,color:#263238
+    %% Premium Programming Models
+    classDef container fill:#f8fafc,stroke:#cbd5e1,stroke-width:2px,color:#0f172a
+    classDef thread fill:#e0f2fe,stroke:#0ea5e9,stroke-width:2px,color:#0369a1,font-weight:bold
+    classDef data fill:#dcfce7,stroke:#22c55e,stroke-width:2px,color:#15803d
 
-    subgraph SHARED_MODEL [THREADS: SHARED SPACE]
+    subgraph SHARED_MODEL ["🧵 Threads: Shared Address Space"]
         direction LR
-        subgraph SHARED_MEM [COMMON ADDRESS SPACE]
+        subgraph SHARED_MEM ["Common Address Space"]
             direction TB
-            DATA[(SHARED VARIABLES)]
+            DATA[("💾 Shared Variables")]
         end
         T1(Thread 1) --- DATA
         T2(Thread 2) --- DATA
         T3(Thread 3) --- DATA
     end
 
-    subgraph PROC_MODEL [PROCESSES: PRIVATE SPACE]
+    subgraph PROC_MODEL ["🏭 Processes: Private Address Space"]
         direction LR
-        subgraph P1_NODE [Process A]
+        subgraph P1_NODE ["Process A"]
             direction TB
-            A_MEM[(Private RAM)]
+            A_MEM[("💾 Private RAM")]
         end
-        subgraph P2_NODE [Process B]
+        subgraph P2_NODE ["Process B"]
             direction TB
-            B_MEM[(Private RAM)]
+            B_MEM[("💾 Private RAM")]
         end
-        P1_NODE <== IPC: Message Passing ==> P2_NODE
+        P1_NODE <== "🔌 IPC: Message Passing" ==> P2_NODE
     end
 
-    class SHARED_MODEL,PROC_MODEL space
-    class T1,T2,T3,P1_NODE,P2_NODE proc
-    class DATA,A_MEM,B_MEM var
+    class SHARED_MODEL,PROC_MODEL container
+    class T1,T2,T3,P1_NODE,P2_NODE thread
+    class DATA,A_MEM,B_MEM data
 ```
 
 ## 5. Designing a Parallel Program
@@ -284,17 +289,17 @@ A systematic approach to parallel program design involves four key steps.
 - **Dynamic Mapping (5.5):** Tasks are assigned to processors at runtime. Suitable when task execution times are unpredictable or when the system is heterogeneous. Improves load balancing but adds scheduling overhead.
 
 ```mermaid
-%%{init: {'theme': 'base', 'themeVariables': { 'lineColor': '#283593', 'primaryColor': '#E8EAF6', 'noteBkgColor': '#FFF9C4', 'noteTextColor': '#3E2723' }}}%%
+%%{init: {'theme': 'base', 'themeVariables': { 'lineColor': '#475569', 'primaryColor': '#f8fafc', 'primaryTextColor': '#0f172a', 'primaryBorderColor': '#cbd5e1', 'actorBorder': '#4f46e5', 'actorBkg': '#e0e7ff', 'actorTextColor': '#1e1b4b' }}}%%
 sequenceDiagram
     autonumber
-    participant Problem as 1. THE PROBLEM
-    participant Decomp as 2. DECOMPOSITION
-    participant Agglom as 3. AGGLOMERATION
-    participant Map as 4. MAPPING
+    actor Problem as 1. The Problem
+    actor Decomp as 2. Decomposition
+    actor Agglom as 3. Agglomeration
+    actor Map as 4. Mapping
     
-    Note over Problem,Map: PROFESSIONAL PARALLEL DESIGN LIFECYCLE
+    Note over Problem,Map: Professional Parallel Design Lifecycle
     
-    Problem->>Decomp: Identify Independant Tasks
+    Problem->>Decomp: Identify Independent Tasks
     Decomp->>Agglom: Group Tasks for Performance
     Agglom->>Map: Allocate to Hardware Cores
     
@@ -332,36 +337,36 @@ Metrics to quantify the effectiveness of parallelization.
 - **Implication:** For scalable problems, speedup can grow linearly with the number of processors by increasing the workload. Contrasts with Amdahl's Law by assuming the problem size scales with resources.
 
 ```mermaid
-%%{init: {'theme': 'base', 'themeVariables': { 'lineColor': '#37474F', 'primaryColor': '#F5F5F5' }}}%%
+%%{init: {'theme': 'base', 'themeVariables': { 'lineColor': '#475569', 'primaryColor': '#f8fafc', 'primaryTextColor': '#0f172a', 'primaryBorderColor': '#cbd5e1' }}}%%
 flowchart TD
-    %% Pro Max Performance Metrics visualization
-    classDef target fill:#E0F2F1,stroke:#00796B,stroke-width:3px,color:#004D40,font-weight:bold
-    classDef kpi fill:#E1F5FE,stroke:#0288D1,stroke-width:2px,color:#01579B,font-weight:bold
-    classDef warning fill:#FFF3E0,stroke:#EF6C00,stroke-width:2px,color:#E65100,font-weight:bold
+    %% Premium Performance Metrics
+    classDef measure fill:#e0f2fe,stroke:#0ea5e9,stroke-width:2px,color:#0369a1,font-weight:bold
+    classDef scaling fill:#dcfce7,stroke:#22c55e,stroke-width:2px,color:#15803d,font-weight:bold
+    classDef bottleneck fill:#ffe4e6,stroke:#e11d48,stroke-width:2px,color:#4c0519,font-weight:bold
 
-    subgraph EVAL_KPI [SYSTEM MEASUREMENTS]
+    subgraph EVAL_KPI ["📈 System Measurements"]
         direction TB
-        S_RATIO[Speedup Ratio: S = T1/Tp]
-        E_RATIO[Efficiency Index: E = S/P]
+        S_RATIO["Speedup Ratio: S = T(1) / T(p)"]
+        E_RATIO["Efficiency Index: E = S / p"]
     end
 
-    subgraph SCALE_PATH [SCALING DYNAMICS]
+    subgraph SCALE_PATH ["⚖️ Scaling Dynamics"]
         direction LR
-        STRONG[Strong Scaling: Fixed Problem]
-        WEAK[Weak Scaling: Scaled Problem]
+        STRONG["Strong Scaling: Fixed Problem Size"]
+        WEAK["Weak Scaling: Scaled Problem Size"]
     end
 
-    subgraph LIMITS [CRITICAL BOTTLENECKS]
-        AMDAHL[Amdahls Law: Seq Limit]
-        GUSTAFSON[Gustafsons Law: Parallel Limit]
+    subgraph LIMITS ["⚠️ Critical Bottlenecks"]
+        AMDAHL["Amdahl's Law: Sequential Limit"]
+        GUSTAFSON["Gustafson's Law: Parallel Limit"]
     end
 
     EVAL_KPI ==> SCALE_PATH
     SCALE_PATH ==> LIMITS
 
-    class S_RATIO,E_RATIO target
-    class STRONG,WEAK kpi
-    class AMDAHL,GUSTAFSON warning
+    class S_RATIO,E_RATIO measure
+    class STRONG,WEAK scaling
+    class AMDAHL,GUSTAFSON bottleneck
 ```
 
 ## 7. Introducing Python
@@ -373,46 +378,7 @@ A brief overview of Python features relevant to parallel programming.
 - `dir()`: Lists the attributes and methods of an object.
 - Essential for exploring libraries and understanding APIs without leaving the interpreter.
 
-**Example implementation ([dir.py](Codes/dir.py)):**
-```python
-# In this program, 
-# we check if the number is positive or
-# negative or zero and 
-# display an appropriate message
-
-num = 1
-
-# Try these two variations as well:
-# num = 0
-# num = -4.5
-
-if num > 0:
-    print("Positive number")
-elif num == 0:
-    print("Zero")
-else:
-    print("Negative number")
-
-# Program to find the sum of all numbers stored in a list
-
-# List of numbers
-numbers = [6, 6, 3, 8, -3, 2, 5, 44, 12]
-
-# variable to store the sum
-sum = 0
-
-# iterate over the list
-for val in numbers:
-	sum = sum+val
-
-# Output: The sum is 48
-print("The sum is", sum)
-```
-
-**Output:**
-<p align="center">
-  <img src="Output/dir.png" alt="dir output" width="80%">
-</p>
+**Example Implementation:** See [dir.py](Codes/dir.py)
 
 ### 7.2 Syntax
 - Python uses indentation (whitespace) to define code blocks, not braces.
@@ -440,141 +406,21 @@ print("The sum is", sum)
 - Loops: `for` (iterates over sequences), `while` (condition-based)
 - Loop control: `break`, `continue`, `pass`
 
-**Example implementation ([flow.py](Codes/flow.py)):**
-```python
-# IF
-
-# In this program, we check if the number is positive or negative or zero and 
-# display an appropriate message
-
-num = 1
-if num > 0:
-    print("Positive number")
-elif num == 0:
-    print("Zero")
-else:
-    print("Negative number")
-
-
-# FOR
-# Program to find the sum of all numbers stored in a list
-numbers = [6, 6, 3, 8, -3, 2, 5, 44, 12]
-sum = 0
-for val in numbers:
-	sum = sum+val
-
-# Output: The sum is 48
-print("The sum is", sum)
-
-
-#WHILE
-# Program to add natural numbers upto sum = 1+2+3+...+n
-
-n = 10
-# initialize sum and counter
-sum = 0
-i = 1
-while i <= n:
-    sum = sum + i
-    i = i+1    # update counter
-
-# print the sum
-print("The sum is", sum)
-```
-
-**Output:**
-<p align="center">
-  <img src="Output/flow.png" alt="flow output" width="80%">
-</p>
+**Example Implementation:** See [flow.py](Codes/flow.py)
 
 ### 7.8 Functions
 - Defined using `def` keyword.
 - Support default arguments, variable-length arguments (`*args`, `**kwargs`), and keyword-only arguments.
 - First-class objects: Functions can be passed as arguments, returned from other functions, and assigned to variables.
 
-**Example implementation ([do_something.py](Codes/do_something.py)):**
-```python
-import random
-
-# function to generate random numbers
-def do_something(count, out_list):
-    for i in range(count):
-        out_list.append(random.random())   # add random number between 0 and 1
-
-# create empty list
-numbers = []
-
-# how many random numbers we want
-count = 5
-
-# call the function
-do_something(count, numbers)
-
-# print the result
-print("Random numbers list:")
-print(numbers)
-```
-
-**Output:**
-<p align="center">
-  <img src="Output/do_something.png" alt="do_something output" width="80%">
-</p>
+**Example Implementation:** See [do_something.py](Codes/do_something.py)
 
 ### 7.9 Classes
 - Python supports Object-Oriented Programming with classes.
 - Key concepts: inheritance, encapsulation, polymorphism.
 - Special methods (e.g., `__init__`, `__str__`) enable customization of object behavior.
 
-**Example implementation ([classes.py](Codes/classes.py)):**
-```python
-class Myclass:
-    common = 10
-    def __init__ (self):
-        self.myvariable = 3
-    def myfunction (self, arg1, arg2):
-        return self.myvariable
-
-instance = Myclass()
-print("instance.myfunction(1, 2)" , instance.myfunction(1, 2))
-
-instance2 = Myclass()
-print("instance.common ",instance.common)
-print("instance2.common ",instance2.common)
-
-Myclass.common = 30
-
-print("instance.common ", instance.common)
-
-print("instance2.common ", instance2.common)
-
-instance.common = 10
-print("instance.common ", instance.common)
-
-print("instance2.common " , instance2.common)
-Myclass.common = 50
-
-print("instance.common ", instance.common)
-print("instance2.common " , instance2.common)
-
-class AnotherClass (Myclass):
-    # The "self" argument is passed automatically
-    # and refers to the class's instance, so you can set
-    # instance variables as above, but from within the class.
-    def __init__ (self, arg1):
-        self.myvariable = 3
-        print (arg1)
-
-instance = AnotherClass ("hello")
-print("instance.myfunction (1, 2) " , instance.myfunction (1, 2))
-
-instance.test = 10
-print("instance.test " , instance.test)
-```
-
-**Output:**
-<p align="center">
-  <img src="Output/classes.png" alt="classes output" width="80%">
-</p>
+**Example Implementation:** See [classes.py](Codes/classes.py)
 
 ### 7.10 Exceptions
 - Error handling using `try`, `except`, `else`, `finally` blocks.
@@ -593,55 +439,14 @@ print("instance.test " , instance.test)
 - Context manager (`with` statement) ensures files are properly closed: `with open('file.txt', 'r') as f: ...`
 - Essential for I/O-bound parallel tasks.
 
-**Example implementation ([file.py](Codes/file.py)):**
-```python
-f = open ('test.txt', 'w')
-f.write ('first line of file \n') 
-
-f.write ('second line of file \n') 
-
-f.close()
-f = open ('test.txt')
-content = f.read()
-print (content)
-
-f.close()
-```
-
-**Output:**
-<p align="center">
-  <img src="Output/file.png" alt="file output" width="80%">
-</p>
+**Example Implementation:** See [file.py](Codes/file.py)
 
 ### 7.13 List Comprehensions
 - Concise syntax for creating lists: `[x**2 for x in range(10) if x % 2 == 0]`
 - More efficient and readable than equivalent for-loops with `append()`.
 - Can be parallelized using libraries like multiprocessing for large datasets.
 
-**Example implementation ([lists.py](Codes/lists.py)):**
-```python
-example = [1, ["another", "list"], ("a", "tuple")]
-example
-mylist = ["element 1", 2, 3.14]
-mylist
-mylist[0] = "yet element 1"
-print(mylist[0])
-mylist[-1] = 3.15
-print (mylist[-1])
-mydict = {"Key 1": "value 1", 2: 3, "pi": 3.14}
-print(mydict)
-mydict["pi"] = 3.15
-print(mydict["pi"])
-mytuple = (1, 2, 3)
-print(mytuple)
-myfunc = len
-print (myfunc(mylist))
-```
-
-**Output:**
-<p align="center">
-  <img src="Output/lists.png" alt="lists output" width="80%">
-</p>
+**Example Implementation:** See [lists.py](Codes/lists.py)
 
 ### 7.14 Running Python Scripts
 - Command line: `python script.py`
@@ -659,9 +464,9 @@ print (myfunc(mylist))
   - Requirements file: `pip install -r requirements.txt` (for reproducible environments)
 
 ```mermaid
-%%{init: {'theme': 'base', 'themeVariables': { 'lineColor': '#1A237E', 'primaryColor': '#E8EAF6' }}}%%
+%%{init: {'theme': 'base', 'themeVariables': { 'lineColor': '#4f46e5', 'primaryColor': '#e0e7ff', 'primaryTextColor': '#1e1b4b', 'primaryBorderColor': '#818cf8' }}}%%
 mindmap
-  root(PYTHON PARALLELISM ECOSYSTEM)
+  root("🐍 Python Parallelism Ecosystem")
     Architecture
       Dynamic Typing
       Indentation Logic
@@ -688,194 +493,39 @@ mindmap
   - Use processes for CPU-bound tasks to bypass the GIL and achieve true parallelism on multi-core systems.
 - **Global Interpreter Lock (GIL):** A mutex in CPython that allows only one thread to execute Python bytecode at a time. It simplifies memory management but limits CPU-bound multi-threaded performance. Multiprocessing circumvents the GIL by using separate processes, each with its own Python interpreter and GIL.
 
-**Example implementation ([serial_test.py](Codes/serial_test.py)):**
-```python
-import time
-from do_something import *
+**Serial Execution Implementation:** See [serial_test.py](Codes/serial_test.py)
 
-if __name__ == "__main__":
-    start_time = time.time()
-    size = 10000000   
-    n_exec = 10
-    for i in range(0, n_exec):
-        out_list = list()
-        do_something(size, out_list)
-       
- 
-    print ("List processing complete.")
-    end_time = time.time()
-    print("serial time=", end_time - start_time)
-```
+**Multi-Threading Implementation:** See [multithreading_test.py](Codes/multithreading_test.py)
 
-**Output:**
-<p align="center">
-  <img src="Output/serail_test.png" alt="serial output" width="80%">
-</p>
+**Multi-Processing Implementation:** See [multiprocessing_test.py](Codes/multiprocessing_test.py)
 
-**Example implementation ([multithreading_test.py](Codes/multithreading_test.py)):**
-```python
-from do_something import *
-import time
-import threading
-
-if __name__ == "__main__":
-    start_time = time.time()
-    size = 10000000
-    threads = 10  
-    jobs = []
-    for i in range(0, threads):
-        out_list = list()
-        thread = threading.Thread(target=do_something(size, out_list))
-        jobs.append(thread)
-    for j in jobs:
-        j.start()
-
-    
-    for j in jobs:
-        j.join()
-
-    print ("List processing complete.")
-    end_time = time.time()
-    print("multithreading time=", end_time - start_time)
-```
-
-**Output:**
-<p align="center">
-  <img src="Output/multithreading_test.png" alt="multithreading output" width="80%">
-</p>
-
-**Example implementation ([multiprocessing_test.py](Codes/multiprocessing_test.py)):**
-```python
-from do_something import *
-import time
-import multiprocessing
-
-if __name__ == "__main__":
-    start_time = time.time()
-    size = 10000000   
-    procs = 10   
-    jobs = []
-    for i in range(0, procs):
-        out_list = list()
-        process = multiprocessing.Process\
-                  (target=do_something,args=(size,out_list))
-        jobs.append(process)
-
-    for j in jobs:
-        j.start()
-
-    for j in jobs:
-        j.join()
-
-    print ("List processing complete.")
-    end_time = time.time()
-    print("multiprocesses time=", end_time - start_time)
-```
-
-**Output:**
-<p align="center">
-  <img src="Output/multiprocessing_test.png" alt="multiprocessing output" width="80%">
-</p>
-
-**Example implementation ([thread_and_processes.py](Codes/thread_and_processes.py)):**
-```python
-import os
-import time
-import threading
-import multiprocessing
-import random
-
-NUM_WORKERS = 10
-size = 1000000
-out_list = list()
-
-def do_something(count, out_list):
-    for i in range(count):
-        out_list.append(random.random())
-
-
-# ---------------- Serial Execution ----------------
-start_time = time.time()
-
-for _ in range(NUM_WORKERS):
-    do_something(size, out_list)
-
-end_time = time.time()
-print("Serial time =", end_time - start_time)
-
-
-# ---------------- Multithreading ----------------
-out_list = []
-start_time = time.time()
-
-jobs = []
-
-for i in range(NUM_WORKERS):
-    thread = threading.Thread(target=do_something, args=(size, out_list))
-    jobs.append(thread)
-
-for j in jobs:
-    j.start()
-
-for j in jobs:
-    j.join()
-
-print("List processing complete.")
-end_time = time.time()
-print("Threading time =", end_time - start_time)
-
-
-# ---------------- Multiprocessing ----------------
-out_list = []
-start_time = time.time()
-
-jobs = []
-
-for i in range(NUM_WORKERS):
-    process = multiprocessing.Process(target=do_something, args=(size, out_list))
-    jobs.append(process)
-
-for j in jobs:
-    j.start()
-
-for j in jobs:
-    j.join()
-
-print("List processing complete.")
-end_time = time.time()
-print("Processes time =", end_time - start_time)
-```
-
-**Output:**
-<p align="center">
-  <img src="Output/Thread%20and%20processes1.png" alt="thread and process 1" width="80%">
-  <img src="Output/Thread%20and%20processes2.png" alt="thread and process 2" width="80%">
-</p>
+**Combined Threads & Processes Benchmarking Implementation:** See [thread_and_processes.py](Codes/thread_and_processes.py)
 
 ```mermaid
-%%{init: {'theme': 'base', 'themeVariables': { 'lineColor': '#37474F', 'primaryColor': '#ECEFF1' }}}%%
+%%{init: {'theme': 'base', 'themeVariables': { 'lineColor': '#475569', 'primaryColor': '#f8fafc', 'primaryTextColor': '#0f172a', 'primaryBorderColor': '#cbd5e1' }}}%%
 flowchart TD
-    %% Pro Max Python Parallel Architecture
-    classDef threadBox fill:#FFF8E1,stroke:#FF8F00,stroke-width:3px,color:#795548,font-weight:bold
-    classDef procBox fill:#E8F5E9,stroke:#2E7D32,stroke-width:3px,color:#1B5E20,font-weight:bold
-    classDef lock fill:#FFEBEE,stroke:#D32F2F,stroke-width:2px,color:#B71C1C,font-weight:bold
+    %% Premium Python Parallel Architecture
+    classDef threadBox fill:#fffbeb,stroke:#d97706,stroke-width:2px,color:#451a03,font-weight:bold
+    classDef procBox fill:#f0fdf4,stroke:#16a34a,stroke-width:2px,color:#14532d,font-weight:bold
+    classDef lock fill:#fee2e2,stroke:#ef4444,stroke-width:2px,color:#7f1d1d,font-weight:bold
+    classDef threadNode fill:#e0f2fe,stroke:#0ea5e9,stroke-width:1.5px,color:#0369a1
 
-    subgraph MultiThreading [PYTHON MULTI-THREADING]
+    subgraph MultiThreading ["🧵 Python Multi-Threading"]
         direction TB
-        Mem[(SHARED RAM)]
-        Mem --- GIL{{GIL LOCK}}
-        GIL ==> T1((Thread 1))
-        GIL ==> T2((Thread 2))
+        Mem[("💾 Shared RAM")]
+        Mem --- GIL{{"🔒 GIL Lock"}}
+        GIL ==> T1(("Thread 1"))
+        GIL ==> T2(("Thread 2"))
         note1["*Concurrency via GIL Interweaving*"]
     end
     
-    subgraph MultiProcessing [PYTHON MULTI-PROCESSING]
+    subgraph MultiProcessing ["🏭 Python Multi-Processing"]
         direction TB
-        subgraph P1 [PROCESS 1]
-            G1[GIL] --- Th1((Main))
+        subgraph P1 ["Process 1"]
+            G1["🔒 GIL"] --- Th1(("Main Thread"))
         end
-        subgraph P2 [PROCESS 2]
-            G2[GIL] --- Th1((Main))
+        subgraph P2 ["Process 2"]
+            G2["🔒 GIL"] --- Th2(("Main Thread"))
         end
         note2["*Parallelism via Isolated Interpreters*"]
     end
@@ -883,6 +533,5 @@ flowchart TD
     class MultiThreading threadBox
     class MultiProcessing procBox
     class GIL,G1,G2 lock
+    class T1,T2,Th1,Th2 threadNode
 ```
-
-

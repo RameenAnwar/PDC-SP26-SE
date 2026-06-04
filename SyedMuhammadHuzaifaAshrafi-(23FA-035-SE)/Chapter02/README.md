@@ -30,22 +30,22 @@ A thread is the smallest unit of execution that can be scheduled by an operating
 - **The Global Interpreter Lock (GIL):** In CPython (the standard Python implementation), the GIL is a mutex that protects access to Python objects. It prevents multiple native threads from executing Python bytecodes at once. This means that for CPU-bound tasks, threads may not offer true parallelism. However, for I/O-bound tasks (like network requests or file operations), threads are highly effective because the GIL is released during I/O operations.
 
 ```mermaid
-%%{init: {'theme': 'base', 'themeVariables': { 'lineColor': '#455A64', 'primaryColor': '#F5F5F5' }}}%%
+%%{init: {'theme': 'base', 'themeVariables': { 'lineColor': '#475569', 'primaryColor': '#f8fafc', 'primaryTextColor': '#0f172a', 'primaryBorderColor': '#cbd5e1' }}}%%
 flowchart TD
-    %% Pro Max Process vs Thread Visual
-    classDef process fill:#E3F2FD,stroke:#1565C0,stroke-width:2px,color:#0D47A1,font-weight:bold
-    classDef thread fill:#E8F5E9,stroke:#2E7D32,stroke-width:2px,color:#1B5E20,font-weight:bold
-    classDef mem fill:#FFF8E1,stroke:#FF8F00,stroke-width:2px,color:#E65100,font-weight:bold
+    %% Premium Process vs Thread Visual
+    classDef process fill:#e0f2fe,stroke:#0ea5e9,stroke-width:2px,color:#0369a1,font-weight:bold
+    classDef thread fill:#dcfce7,stroke:#22c55e,stroke-width:2px,color:#15803d,font-weight:bold
+    classDef mem fill:#fef3c7,stroke:#f59e0b,stroke-width:2px,color:#b45309,font-weight:bold
     
-    subgraph PROCESS [PROCESS EXECUTION ENVIRONMENT]
+    subgraph PROCESS ["🏭 Process Execution Environment"]
         direction TB
-        RAM[(SHARED HEAP MEMORY)]
+        RAM[("💾 Shared Heap Memory")]
         
-        subgraph THREAD_POOL [THREAD POOL]
+        subgraph THREAD_POOL ["🧵 Thread Pool"]
             direction LR
-            T1(Thread 1 Stack)
-            T2(Thread 2 Stack)
-            T3(Thread N Stack)
+            T1("Thread 1 Stack")
+            T2("Thread 2 Stack")
+            T3("Thread N Stack")
         end
         RAM === THREAD_POOL
     end
@@ -69,31 +69,7 @@ This refers to the functional approach of creating a thread.
   - `start()`: This method initiates the thread's activity. It arranges for the object's `run()` method to be invoked in a separate thread of control.
   - `join()`: This method blocks the calling thread until the thread whose `join()` method is called terminates. This is used to synchronize the completion of threads.
 
-**Example implementation ([Thread_definition.py](Codes/Thread_definition.py)):**
-```python
-import threading
-
-
-def my_func(thread_number):
-    return print('my_func called by thread N°{}'.format(thread_number))
-
-
-def main():
-    threads = []
-    for i in range(10):
-        t = threading.Thread(target=my_func, args=(i,))
-        threads.append(t)
-        t.start()
-        t.join()
-
-if __name__ == "__main__":
-    main()
-```
-
-**Output:**
-<p align="center">
-  <img src="Output/Thread%20Definition.png" alt="Thread Definition Output" width="80%">
-</p>
+**Example Implementation:** See [Thread_definition.py](Codes/Thread_definition.py)
 
 ## 4. Determining the Current Thread
 In a multi-threaded environment, it is often necessary to identify which thread is executing a specific piece of code.
@@ -101,59 +77,19 @@ In a multi-threaded environment, it is often necessary to identify which thread 
 - **Thread Identification:** Each thread has a name (default is `Thread-N`) and a unique identifier. Knowing the current thread is useful for logging, debugging, and thread-specific behavior logic.
 - **Main Thread:** The thread that starts the Python program is called the `MainThread`. Other threads are spawned from this main thread.
 
-**Example implementation ([Thread_determine.py](Codes/Thread_determine.py)):**
-```python
-import threading
-import time
-
-def function_A():
-    print (threading.current_thread().getName()+str('--> starting \n'))
-    time.sleep(2)
-    print (threading.current_thread().getName()+str( '--> exiting \n'))
-    return
-
-def function_B():
-    print (threading.current_thread().getName()+str('--> starting \n'))
-    time.sleep(2)
-    print (threading.current_thread().getName()+str( '--> exiting \n'))
-    return
-
-def function_C():
-    print (threading.current_thread().getName()+str('--> starting \n'))
-    time.sleep(2)
-    print (threading.current_thread().getName()+str( '--> exiting \n'))
-    return
-
-if __name__ == "__main__":
-    t1 = threading.Thread(name='function_A', target=function_A)
-    t2 = threading.Thread(name='function_B', target=function_B)
-    t3 = threading.Thread(name='function_C',target=function_C) 
-
-    t1.start()
-    t2.start()
-    t3.start()
-
-    t1.join()
-    t2.join()
-    t3.join()
-```
-
-**Output:**
-<p align="center">
-  <img src="Output/Thread%20Determine.png" alt="Thread Determine Output" width="80%">
-</p>
+**Example Implementation:** See [Thread_determine.py](Codes/Thread_determine.py)
 
 ```mermaid
-%%{init: {'theme': 'base', 'themeVariables': { 'lineColor': '#37474F', 'primaryColor': '#ECEFF1' }}}%%
+%%{init: {'theme': 'base', 'themeVariables': { 'lineColor': '#475569', 'primaryColor': '#f8fafc', 'primaryTextColor': '#0f172a', 'primaryBorderColor': '#cbd5e1' }}}%%
 flowchart LR
-    %% Pro Max Thread Spawning Model
-    classDef tMain fill:#FCE4EC,stroke:#C2185B,stroke-width:3px,color:#880E4F,font-weight:bold
-    classDef tChild fill:#E1F5FE,stroke:#0288D1,stroke-width:2px,color:#01579B,font-weight:bold
+    %% Premium Thread Spawning Model
+    classDef tMain fill:#ffe4e6,stroke:#e11d48,stroke-width:2.5px,color:#4c0519,font-weight:bold
+    classDef tChild fill:#e0f2fe,stroke:#0ea5e9,stroke-width:2px,color:#0369a1,font-weight:bold
 
-    Main(MAIN THREAD)
-    Main == "t1.start()" ==> F_A(Function A)
-    Main == "t2.start()" ==> F_B(Function B)
-    Main == "t3.start()" ==> F_C(Function C)
+    Main("💻 Main Thread")
+    Main == "t1.start()" ==> F_A("🧵 Function A")
+    Main == "t2.start()" ==> F_B("🧵 Function B")
+    Main == "t3.start()" ==> F_C("🧵 Function C")
 
     class Main tMain
     class F_A,F_B,F_C tChild
@@ -165,42 +101,7 @@ flowchart LR
 ### 4.1 Thread Names and Process IDs
 In concurrent environments, threads exist within a single process space. Each process is assigned a unique process identifier (PID) by the operating system, and all threads in that process share the same PID.
 
-**Example implementation ([Thread_name_and_processes.py](Codes/Thread_name_and_processes.py)):**
-```python
-from threading import Thread
-import time
-import os
-
-class MyThreadClass (Thread):
-   def __init__(self, name):
-      Thread.__init__(self)
-      self.name = name
-  
-   def run(self):
-       print("ID of process running {}".format(self.name)) #, " is {} \n".format(os.getpid()))
-
-def main():
-    from random import randint
-    # Thread Creation
-    thread1 = MyThreadClass("Thread#1 ")
-    thread2 = MyThreadClass("Thread#2 ")
-  
-    # Thread Running
-    thread1.start()
-    thread2.start()
-
-
-    # Thread joining
-    thread1.join()
-    thread2.join()
-
-    # End 
-    print("End")
-
-
-if __name__ == "__main__":
-    main()
-```
+**Example Implementation:** See [Thread_name_and_processes.py](Codes/Thread_name_and_processes.py)
 
 ## 5. Defining a Thread Subclass
 This refers to the Object-Oriented approach of creating a thread.
@@ -208,77 +109,7 @@ This refers to the Object-Oriented approach of creating a thread.
 - **Overriding `run()`:** You override the `run()` method in your subclass. The code inside `run()` is what gets executed when the thread starts.
 - **Usage:** This approach is preferred when you need to maintain state within the thread object itself or when you need to customize the thread's behavior beyond just executing a single function. It allows for better encapsulation of data and logic related to that specific thread.
 
-**Example implementation ([MyThreadClass.py](Codes/MyThreadClass.py)):**
-```python
-import time
-import os
-from random import randint
-from threading import Thread
-
-class MyThreadClass (Thread):
-   def __init__(self, name, duration):
-      Thread.__init__(self)
-      self.name = name
-      self.duration = duration
-   def run(self):
-      print ("---> " + self.name + \
-             " running, belonging to process ID "\
-             + str(os.getpid()) + "\n")
-      time.sleep(self.duration)
-      print ("---> " + self.name + " over\n")
-
-
-def main():
-    start_time = time.time()
-    
-    # Thread Creation
-    thread1 = MyThreadClass("Thread#1 ", randint(1,10))
-    thread2 = MyThreadClass("Thread#2 ", randint(1,10))
-    thread3 = MyThreadClass("Thread#3 ", randint(1,10))
-    thread4 = MyThreadClass("Thread#4 ", randint(1,10))
-    thread5 = MyThreadClass("Thread#5 ", randint(1,10))
-    thread6 = MyThreadClass("Thread#6 ", randint(1,10))
-    thread7 = MyThreadClass("Thread#7 ", randint(1,10))
-    thread8 = MyThreadClass("Thread#8 ", randint(1,10))
-    thread9 = MyThreadClass("Thread#9 ", randint(1,10))
-
-    # Thread Running
-    thread1.start()
-    thread2.start()
-    thread3.start()
-    thread4.start()
-    thread5.start()
-    thread6.start()
-    thread7.start()
-    thread8.start()
-    thread9.start()
-
-    # Thread joining
-    thread1.join()
-    thread2.join()
-    thread3.join()
-    thread4.join()
-    thread5.join()
-    thread6.join()
-    thread7.join()
-    thread8.join()
-    thread9.join()
-
-    # End 
-    print("End")
-
-    #Execution Time
-    print("--- %s seconds ---" % (time.time() - start_time))
-
-
-if __name__ == "__main__":
-    main()
-```
-
-**Output:**
-<p align="center">
-  <img src="Output/MyThreadClass.png" alt="MyThreadClass Output" width="80%">
-</p>
+**Example Implementation:** See [MyThreadClass.py](Codes/MyThreadClass.py)
 
 ## 6. Thread Synchronization with a Lock
 When multiple threads access shared data simultaneously, race conditions can occur. A race condition happens when the behavior of software depends on the timing of uncontrollable events (like thread scheduling).
@@ -288,103 +119,26 @@ When multiple threads access shared data simultaneously, race conditions can occ
   - `release()`: The thread releases the lock, allowing other waiting threads to acquire it.
 - **Importance:** This prevents data corruption when multiple threads try to modify the same variable or resource concurrently.
 
-**Example implementation ([MyThreadClass_lock.py](Codes/MyThreadClass_lock.py)):**
-```python
-import threading
-import time
-import os
-from threading import Thread
-from random import randint
-
-# Lock Definition
-threadLock = threading.Lock()
-
-class MyThreadClass (Thread):
-   def __init__(self, name, duration):
-      Thread.__init__(self)
-      self.name = name
-      self.duration = duration
-   def run(self):
-      #Acquire the Lock
-      threadLock.acquire()      
-      print ("---> " + self.name + \
-             " running, belonging to process ID "\
-             + str(os.getpid()) + "\n")
-      time.sleep(self.duration)
-      print ("---> " + self.name + " over\n")
-      #Release the Lock
-      threadLock.release()
-
-
-def main():
-    start_time = time.time()
-    # Thread Creation
-    thread1 = MyThreadClass("Thread#1 ", randint(1,10))
-    thread2 = MyThreadClass("Thread#2 ", randint(1,10))
-    thread3 = MyThreadClass("Thread#3 ", randint(1,10))
-    thread4 = MyThreadClass("Thread#4 ", randint(1,10))
-    thread5 = MyThreadClass("Thread#5 ", randint(1,10))
-    thread6 = MyThreadClass("Thread#6 ", randint(1,10))
-    thread7 = MyThreadClass("Thread#7 ", randint(1,10))
-    thread8 = MyThreadClass("Thread#8 ", randint(1,10))
-    thread9 = MyThreadClass("Thread#9 ", randint(1,10))
-
-    # Thread Running
-    thread1.start()
-    thread2.start()
-    thread3.start()
-    thread4.start()
-    thread5.start()
-    thread6.start()
-    thread7.start()
-    thread8.start()
-    thread9.start()
-
-    # Thread joining
-    thread1.join()
-    thread2.join()
-    thread3.join()
-    thread4.join()
-    thread5.join()
-    thread6.join()
-    thread7.join()
-    thread8.join()
-    thread9.join()
-
-    # End 
-    print("End")
-
-    #Execution Time
-    print("--- %s seconds ---" % (time.time() - start_time))
-
-
-if __name__ == "__main__":
-    main()
-```
-
-**Output:**
-<p align="center">
-  <img src="Output/MyThreadClass_lock.png" alt="MyThreadClass Lock Output" width="80%">
-</p>
+**Example Implementation:** See [MyThreadClass_lock.py](Codes/MyThreadClass_lock.py)
 
 ```mermaid
-%%{init: {'theme': 'base', 'themeVariables': { 'lineColor': '#455A64', 'primaryColor': '#F5F5F5' }}}%%
+%%{init: {'theme': 'base', 'themeVariables': { 'lineColor': '#475569', 'primaryColor': '#f8fafc', 'primaryTextColor': '#0f172a', 'primaryBorderColor': '#cbd5e1' }}}%%
 flowchart TD
-    %% Pro Max Mutex Visualization
-    classDef tActive fill:#E8F5E9,stroke:#2E7D32,stroke-width:2px,color:#1B5E20,font-weight:bold
-    classDef tWait fill:#FFEBEE,stroke:#D32F2F,stroke-width:2px,color:#B71C1C,font-weight:bold
-    classDef lock fill:#FFF3E0,stroke:#E65100,stroke-width:3px,color:#E65100,font-weight:bold
+    %% Premium Mutex Lock Visual
+    classDef tActive fill:#dcfce7,stroke:#22c55e,stroke-width:2px,color:#15803d,font-weight:bold
+    classDef tWait fill:#ffe4e6,stroke:#e11d48,stroke-width:2px,color:#4c0519,font-weight:bold
+    classDef lock fill:#fef3c7,stroke:#f59e0b,stroke-width:2.5px,color:#78350f,font-weight:bold
 
-    subgraph MUTEX_LOCK [MUTEX LOCK SYNCHRONIZATION]
+    subgraph MUTEX_LOCK ["🔒 Mutex Lock Synchronization"]
         direction TB
-        Bouncer{{MUTEX OBJECT}}
-        CS[(CRITICAL SECTION)]
+        Bouncer{{"🔑 Mutex Object"}}
+        CS[("⚡ Critical Section")]
         Bouncer === CS
     end
 
-    T1(Active Thread) == "Acquires Lock" ==> Bouncer
-    T2(Blocked Thread) -. "Waits for Lock" .-> Bouncer
-    T3(Blocked Thread) -. "Waits for Lock" .-> Bouncer
+    T1("🟢 Active Thread") == "Acquires Lock" ==> Bouncer
+    T2("🔴 Blocked Thread") -. "Waits for Lock" .-> Bouncer
+    T3("🔴 Blocked Thread") -. "Waits for Lock" .-> Bouncer
 
     class T1 tActive
     class T2,T3 tWait
@@ -396,80 +150,7 @@ In `MyThreadClass_lock.py`, the lock is acquired at the start of the critical bl
 
 To improve concurrency, we should release the lock as soon as the critical section (where the shared console resource is printed) completes, allowing other threads to log their start messages before sleeping concurrently.
 
-**Example implementation ([MyThreadClass_lock_2.py](Codes/MyThreadClass_lock_2.py)):**
-```python
-import threading
-import time
-import os
-from threading import Thread
-from random import randint
-
-# Lock Definition
-threadLock = threading.Lock()
-
-class MyThreadClass (Thread):
-   def __init__(self, name, duration):
-      Thread.__init__(self)
-      self.name = name
-      self.duration = duration
-   def run(self):
-      #Acquire the Lock
-      threadLock.acquire()      
-      print ("---> " + self.name + \
-             " running, belonging to process ID "\
-             + str(os.getpid()) + "\n")
-      threadLock.release()
-      time.sleep(self.duration)
-      print ("---> " + self.name + " over\n")
-      #Release the Lock
-
-
-def main():
-    start_time = time.time()
-    
-    # Thread Creation
-    thread1 = MyThreadClass("Thread#1 ", randint(1,10))
-    thread2 = MyThreadClass("Thread#2 ", randint(1,10))
-    thread3 = MyThreadClass("Thread#3 ", randint(1,10))
-    thread4 = MyThreadClass("Thread#4 ", randint(1,10))
-    thread5 = MyThreadClass("Thread#5 ", randint(1,10))
-    thread6 = MyThreadClass("Thread#6 ", randint(1,10))
-    thread7 = MyThreadClass("Thread#7 ", randint(1,10))
-    thread8 = MyThreadClass("Thread#8 ", randint(1,10))
-    thread9 = MyThreadClass("Thread#9 ", randint(1,10))
-
-    # Thread Running
-    thread1.start()
-    thread2.start()
-    thread3.start()
-    thread4.start()
-    thread5.start()
-    thread6.start()
-    thread7.start()
-    thread8.start()
-    thread9.start()
-
-    # Thread joining
-    thread1.join()
-    thread2.join()
-    thread3.join()
-    thread4.join()
-    thread5.join()
-    thread6.join()
-    thread7.join()
-    thread8.join()
-    thread9.join()
-
-    # End
-    print("End")
-
-    #Execution Time
-    print("--- %s seconds ---" % (time.time() - start_time))
-
-
-if __name__ == "__main__":
-    main()
-```
+**Example Implementation:** See [MyThreadClass_lock_2.py](Codes/MyThreadClass_lock_2.py)
 
 ## 7. Thread Synchronization with RLock
 RLock stands for Reentrant Lock.
@@ -478,71 +159,19 @@ RLock stands for Reentrant Lock.
 - **Mechanism:** The lock must be released the same number of times it was acquired by that thread before it is actually unlocked for other threads.
 - **Use Case:** This is useful in recursive functions where a thread might call a function that requires the lock, which in turn calls another function that also requires the same lock.
 
-**Example implementation ([Rlock.py](Codes/Rlock.py)):**
-```python
-import threading
-import time
-import random
-
-class Box:
-    def __init__(self):
-        self.lock = threading.RLock()
-        self.total_items = 0
-
-    def execute(self, value):
-        with self.lock:
-            self.total_items += value
-
-    def add(self):
-        with self.lock: # Uses RLock recursively inside execute
-            self.execute(1)
-
-    def remove(self):
-        with self.lock:
-            self.execute(-1)
-
-def adder(box, items):
-    while items:
-        box.add()
-        time.sleep(1)
-        items -= 1
-
-def remover(box, items):
-    while items:
-        box.remove()
-        time.sleep(1)
-        items -= 1
-
-def main():
-    box = Box()
-    t1 = threading.Thread(target=adder, args=(box, random.randint(10,20)))
-    t2 = threading.Thread(target=remover, args=(box, random.randint(1,10)))
-    
-    t1.start()
-    t2.start()
-    t1.join()
-    t2.join()
-
-if __name__ == "__main__":
-    main()
-```
-
-**Output:**
-<p align="center">
-  <img src="Output/Rlock.png" alt="RLock Output" width="80%">
-</p>
+**Example Implementation:** See [Rlock.py](Codes/Rlock.py)
 
 ```mermaid
-%%{init: {'theme': 'base', 'themeVariables': { 'lineColor': '#455A64', 'primaryColor': '#F5F5F5' }}}%%
+%%{init: {'theme': 'base', 'themeVariables': { 'lineColor': '#475569', 'primaryColor': '#f8fafc', 'primaryTextColor': '#0f172a', 'primaryBorderColor': '#cbd5e1' }}}%%
 flowchart LR
-    %% Pro Max RLock Reentrancy Flow
-    classDef rlock fill:#F3E5F5,stroke:#7B1FA2,stroke-width:3px,color:#4A148C,font-weight:bold
-    classDef func fill:#E3F2FD,stroke:#1565C0,stroke-width:2px,color:#0D47A1,font-weight:bold
+    %% Premium RLock Reentrancy Flow
+    classDef rlock fill:#f3e8ff,stroke:#7c3aed,stroke-width:2.5px,color:#2e1065,font-weight:bold
+    classDef func fill:#e0f2fe,stroke:#0ea5e9,stroke-width:2px,color:#0369a1,font-weight:bold
 
-    T(Executing Thread)
-    R{{REENTRANT LOCK}}
-    F1(Function Context A)
-    F2(Function Context B)
+    T("🧵 Executing Thread")
+    R{{"🔄 Reentrant Lock"}}
+    F1("Function Context A")
+    F2("Function Context B")
 
     T == "Acquire (Count=1)" ==> R
     R == "Execution Path" ==> F1
@@ -561,75 +190,27 @@ A Semaphore is a more generalized lock that manages a counter instead of a binar
 - **Resource Limiting:** It is used to limit the number of threads that can access a resource simultaneously. For example, if you have a pool of 5 database connections, you can use a semaphore with a value of 5. Only 5 threads can acquire the semaphore at once; others must wait.
 - **Bounded Semaphore:** A variation that raises an error if `release()` is called more times than `acquire()`, preventing programming errors where the counter increases indefinitely.
 
-**Example implementation ([Semaphore.py](Codes/Semaphore.py)):**
-```python
-import logging
-import threading
-import time
-import random
-
-LOG_FORMAT = '%(asctime)s %(threadName)-17s %(levelname)-8s %(message)s'
-logging.basicConfig(level=logging.INFO, format=LOG_FORMAT)
-
-
-semaphore = threading.Semaphore(0)
-item = 0
-
-
-def consumer():
-    logging.info('Consumer is waiting')
-    semaphore.acquire()
-    logging.info('Consumer notify: item number {}'.format(item))
-
-
-def producer():
-    global item
-    time.sleep(3)
-    item = random.randint(0, 1000)
-    logging.info('Producer notify: item number {}'.format(item))
-    semaphore.release()
-
-
-def main():
-    for i in range(10):
-        t1 = threading.Thread(target=consumer)
-        t2 = threading.Thread(target=producer)
-
-        t1.start()
-        t2.start()
-
-        t1.join()
-        t2.join()
-
-
-if __name__ == "__main__":
-    main()
-```
-
-**Output:**
-<p align="center">
-  <img src="Output/Semaphore.png" alt="Semaphore Output" width="80%">
-</p>
+**Example Implementation:** See [Semaphore.py](Codes/Semaphore.py)
 
 ```mermaid
-%%{init: {'theme': 'base', 'themeVariables': { 'lineColor': '#455A64', 'primaryColor': '#F5F5F5' }}}%%
+%%{init: {'theme': 'base', 'themeVariables': { 'lineColor': '#475569', 'primaryColor': '#f8fafc', 'primaryTextColor': '#0f172a', 'primaryBorderColor': '#cbd5e1' }}}%%
 flowchart TD
-    %% Pro Max Semaphore Visual
-    classDef sem fill:#E0F7FA,stroke:#00838F,stroke-width:3px,color:#006064,font-weight:bold
-    classDef pass fill:#E8F5E9,stroke:#2E7D32,stroke-width:2px,color:#1B5E20,font-weight:bold
-    classDef block fill:#FFEBEE,stroke:#D32F2F,stroke-width:2px,color:#B71C1C,font-weight:bold
+    %% Premium Semaphore Visual
+    classDef sem fill:#e0f2fe,stroke:#0ea5e9,stroke-width:2.5px,color:#0369a1,font-weight:bold
+    classDef pass fill:#dcfce7,stroke:#22c55e,stroke-width:2px,color:#15803d,font-weight:bold
+    classDef block fill:#ffe4e6,stroke:#e11d48,stroke-width:2px,color:#4c0519,font-weight:bold
 
-    subgraph SEMAPHORE_BUCKET [SEMAPHORE TOKEN BUCKET]
+    subgraph SEMAPHORE_BUCKET ["🚦 Semaphore Token Bucket"]
         direction TB
-        Bucket{{TOKENS = 2}}
-        Resource[(RESOURCE POOL)]
+        Bucket{{"🪙 Tokens = 2"}}
+        Resource[("📦 Shared Resources")]
         Bucket === Resource
     end
 
-    T1(Thread A) == "Acquire (Tokens=1)" ==> Bucket
-    T2(Thread B) == "Acquire (Tokens=0)" ==> Bucket
-    T3(Thread C) -. "Blocked Wait" .-> Bucket
-    T4(Thread D) -. "Blocked Wait" .-> Bucket
+    T1("Thread A") == "Acquire (Tokens=1)" ==> Bucket
+    T2("Thread B") == "Acquire (Tokens=0)" ==> Bucket
+    T3("Thread C") -. "Blocked Wait" .-> Bucket
+    T4("Thread D") -. "Blocked Wait" .-> Bucket
 
     class Bucket sem
     class T1,T2 pass
@@ -643,96 +224,19 @@ A Condition object allows one or more threads to wait until they are notified by
   - `notify()`: Another thread calls this to wake up one or more waiting threads.
 - **Use Case:** This is essential for Producer-Consumer problems. A consumer thread waits on a condition until a producer thread adds data to a shared resource and notifies the consumer. It ensures threads do not waste CPU cycles constantly checking (polling) for a state change.
 
-**Example implementation ([Condition.py](Codes/Condition.py)):**
-```python
-import logging
-import threading
-import time
-
-LOG_FORMAT = '%(asctime)s %(threadName)-17s %(levelname)-8s %(message)s'
-logging.basicConfig(level=logging.INFO, format=LOG_FORMAT)
-
-items = []
-condition = threading.Condition()
-
-
-class Consumer(threading.Thread):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-    def consume(self):
-
-        with condition:
-
-            if len(items) == 0:
-                logging.info('no items to consume')
-                condition.wait()
-
-            items.pop()
-            logging.info('consumed 1 item')
-
-            condition.notify()
-
-    def run(self):
-        for i in range(20):
-            time.sleep(2)
-            self.consume()
-
-
-class Producer(threading.Thread):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-    def produce(self):
-
-        with condition:
-
-            if len(items) == 10:
-                logging.info('items produced {}. Stopped'.format(len(items)))
-                condition.wait()
-
-            items.append(1)
-            logging.info('total items {}'.format(len(items)))
-
-            condition.notify()
-
-    def run(self):
-        for i in range(20):
-            time.sleep(0.5)
-            self.produce()
-
-
-def main():
-    producer = Producer(name='Producer')
-    consumer = Consumer(name='Consumer')
-
-    producer.start()
-    consumer.start()
-
-    producer.join()
-    consumer.join()
-
-
-if __name__ == "__main__":
-    main()
-```
-
-**Output:**
-<p align="center">
-  <img src="Output/Condition.png" alt="Condition Output" width="80%">
-</p>
+**Example Implementation:** See [Condition.py](Codes/Condition.py)
 
 ```mermaid
-%%{init: {'theme': 'base', 'themeVariables': { 'lineColor': '#455A64', 'primaryColor': '#F5F5F5' }}}%%
+%%{init: {'theme': 'base', 'themeVariables': { 'lineColor': '#475569', 'primaryColor': '#f8fafc', 'primaryTextColor': '#0f172a', 'primaryBorderColor': '#cbd5e1' }}}%%
 flowchart LR
-    %% Pro Max Condition Signal Flow
-    classDef cWait fill:#FFEBEE,stroke:#D32F2F,stroke-width:2px,color:#B71C1C,font-weight:bold
-    classDef cSignal fill:#E8F5E9,stroke:#2E7D32,stroke-width:2px,color:#1B5E20,font-weight:bold
-    classDef cond fill:#FFF3E0,stroke:#E65100,stroke-width:3px,color:#E65100,font-weight:bold
+    %% Premium Condition Signal Flow
+    classDef cWait fill:#ffe4e6,stroke:#e11d48,stroke-width:2px,color:#4c0519,font-weight:bold
+    classDef cSignal fill:#dcfce7,stroke:#22c55e,stroke-width:2px,color:#15803d,font-weight:bold
+    classDef cond fill:#fef3c7,stroke:#f59e0b,stroke-width:2.5px,color:#78350f,font-weight:bold
 
-    T_Cons(Consumer Thread)
-    Cond[/CONDITION VARIABLE/]
-    T_Prod(Producer Thread)
+    T_Cons("📥 Consumer Thread")
+    Cond{{"🔔 Condition Variable"}}
+    T_Prod("📤 Producer Thread")
 
     T_Cons == "Wait Signal" ==> Cond
     Cond -. "Blocks Execution" .-> T_Cons
@@ -754,76 +258,22 @@ An Event is a simple synchronization object that represents an internal flag.
   - `wait()`: Blocks the thread until the internal flag is true.
 - **Difference from Condition:** Events are simpler than Conditions. They are best used for one-time signals or simple state changes, whereas Conditions are better for complex state management involving shared data.
 
-**Example implementation ([Event.py](Codes/Event.py)):**
-```python
-import logging
-import threading
-import time
-import random
-
-LOG_FORMAT = '%(asctime)s %(threadName)-17s %(levelname)-8s %(message)s'
-logging.basicConfig(level=logging.INFO, format=LOG_FORMAT)
-
-items = []
-event = threading.Event()
-
-
-class Consumer(threading.Thread):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-    def run(self):
-        while True:
-            time.sleep(2)
-            event.wait()
-            item = items.pop()
-            logging.info('Consumer notify: {} popped by {}'\
-                         .format(item, self.name))
-
-class Producer(threading.Thread):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-    def run(self):
-        for i in range(5):
-            time.sleep(2)
-            item = random.randint(0, 100)
-            items.append(item)
-            logging.info('Producer notify: item {} appended by {}'\
-                         .format(item, self.name))
-            event.set()
-            event.clear()
-
-if __name__ == "__main__":
-    t1 = Producer()
-    t2 = Consumer()
-
-    t1.start()
-    t2.start()
-
-    t1.join()
-    t2.join()
-```
-
-**Output:**
-<p align="center">
-  <img src="Output/Event.png" alt="Event Output" width="80%">
-</p>
+**Example Implementation:** See [Event.py](Codes/Event.py)
 
 ```mermaid
-%%{init: {'theme': 'base', 'themeVariables': { 'lineColor': '#455A64', 'primaryColor': '#F5F5F5' }}}%%
+%%{init: {'theme': 'base', 'themeVariables': { 'lineColor': '#475569', 'primaryColor': '#f8fafc', 'primaryTextColor': '#0f172a', 'primaryBorderColor': '#cbd5e1' }}}%%
 flowchart TD
-    %% Pro Max Event Flag Visual
-    classDef eFlag fill:#F3E5F5,stroke:#7B1FA2,stroke-width:3px,color:#4A148C,font-weight:bold
-    classDef tAction fill:#E3F2FD,stroke:#1565C0,stroke-width:2px,color:#0D47A1,font-weight:bold
+    %% Premium Event Flag Visual
+    classDef eFlag fill:#f3e8ff,stroke:#7c3aed,stroke-width:2.5px,color:#2e1065,font-weight:bold
+    classDef tAction fill:#e0f2fe,stroke:#0ea5e9,stroke-width:2px,color:#0369a1,font-weight:bold
 
-    subgraph EVENT_SYSTEM [EVENT FLAG SYSTEM]
+    subgraph EVENT_SYSTEM ["🚩 Event Flag System"]
         direction LR
-        Flag{INTERNAL FLAG}
+        Flag{"Internal Flag Status"}
     end
 
-    T_Work(Worker Thread) == "Wait for Flag" ==> Flag
-    T_Ctrl(Control Thread) == "Set / Clear Flag" ==> Flag
+    T_Work("Worker Thread") == "Wait for Flag" ==> Flag
+    T_Ctrl("Control Thread") == "Set / Clear Flag" ==> Flag
     
     Flag -. "If True: Release" .-> T_Work
     Flag -. "If False: Block" .-> T_Work
@@ -839,58 +289,25 @@ A Barrier provides a synchronization point for a fixed number of threads.
 - **Release:** Once the last thread arrives, all waiting threads are released simultaneously to continue execution.
 - **Use Case:** Useful in parallel algorithms where a phase of computation must be completed by all threads before the next phase can begin.
 
-**Example implementation ([Barrier.py](Codes/Barrier.py)):**
-```python
-from random import randrange
-from threading import Barrier, Thread
-from time import ctime, sleep
-
-num_runners = 3
-finish_line = Barrier(num_runners)
-runners = ['Huey', 'Dewey', 'Louie']
-
-def runner():
-    name = runners.pop()
-    sleep(randrange(2, 5))
-    print('%s reached the barrier at: %s \n' % (name, ctime()))
-    finish_line.wait()
-
-def main():
-    threads = []
-    print('START RACE!!!!')
-    for i in range(num_runners):
-        threads.append(Thread(target=runner))
-        threads[-1].start()
-    for thread in threads:
-        thread.join()
-    print('Race over!')
-
-if __name__ == "__main__":
-    main()
-```
-
-**Output:**
-<p align="center">
-  <img src="Output/Barrier.png" alt="Barrier Output" width="80%">
-</p>
+**Example Implementation:** See [Barrier.py](Codes/Barrier.py)
 
 ```mermaid
-%%{init: {'theme': 'base', 'themeVariables': { 'lineColor': '#455A64', 'primaryColor': '#F5F5F5' }}}%%
+%%{init: {'theme': 'base', 'themeVariables': { 'lineColor': '#475569', 'primaryColor': '#f8fafc', 'primaryTextColor': '#0f172a', 'primaryBorderColor': '#cbd5e1' }}}%%
 flowchart TD
-    %% Pro Max Barrier Rendezvous Visual
-    classDef bar fill:#FFF3E0,stroke:#E65100,stroke-width:3px,color:#E65100,font-weight:bold
-    classDef thr fill:#E1F5FE,stroke:#0288D1,stroke-width:2px,color:#01579B,font-weight:bold
-    classDef pass fill:#E8F5E9,stroke:#2E7D32,stroke-width:2px,color:#1B5E20,font-weight:bold
+    %% Premium Barrier Rendezvous Visual
+    classDef bar fill:#fef3c7,stroke:#f59e0b,stroke-width:2.5px,color:#78350f,font-weight:bold
+    classDef thr fill:#e0f2fe,stroke:#0ea5e9,stroke-width:2px,color:#0369a1,font-weight:bold
+    classDef pass fill:#dcfce7,stroke:#22c55e,stroke-width:2px,color:#15803d,font-weight:bold
 
-    subgraph RACE_TRACK [BARRIER RENDEZVOUS STATE]
-        B{{BARRIER CAPACITY = 3}}
+    subgraph RACE_TRACK ["🚧 Barrier Rendezvous State"]
+        B{{"🛑 Barrier Capacity = 3"}}
     end
 
-    T1(Thread A) == "Call wait()" ==> B
-    T2(Thread B) == "Call wait()" ==> B
-    T3(Thread C) == "Call wait()" ==> B
+    T1("Thread A") == "Call wait()" ==> B
+    T2("Thread B") == "Call wait()" ==> B
+    T3("Thread C") == "Call wait()" ==> B
 
-    B == "Synchronized Release" ==> Phase2[(PHASE 2 EXECUTION)]
+    B == "Synchronized Release" ==> Phase2[("🏁 Phase 2 Execution")]
 
     class B bar
     class T1,T2,T3 thr
@@ -906,86 +323,26 @@ While locks and conditions manage access to shared variables, queues provide a s
   - `get()`: Removes and returns an item from the queue. It can block if the queue is empty.
 - **Advantage:** Decouples the production of data from the consumption of data, simplifying synchronization logic and preventing race conditions.
 
-**Example implementation ([Threading_with_queue.py](Codes/Threading_with_queue.py)):**
-```python
-""""Thread synchronisation with queue"""
-
-from threading import Thread
-from queue import Queue
-import time
-import random
-
-
-class Producer(Thread):
-
-    def __init__(self, queue):
-        Thread.__init__(self)
-        self.queue = queue
-
-    def run(self):
-        for i in range(5):
-            item = random.randint(0, 256)
-            self.queue.put(item)
-            print('Producer notify : item N°%d appended to queue by %s\n' \
-                  % (item, self.name))
-            time.sleep(1)
-
-
-class Consumer(Thread):
-
-    def __init__(self, queue):
-        Thread.__init__(self)
-        self.queue = queue
-
-    def run(self):
-        while True:
-            item = self.queue.get()
-            print('Consumer notify : %d popped from queue by %s' \
-                  % (item, self.name))
-            self.queue.task_done()
-
-if __name__ == '__main__':
-    queue = Queue()
-
-    t1 = Producer(queue)
-    t2 = Consumer(queue)
-    t3 = Consumer(queue)
-    t4 = Consumer(queue)
-
-    t1.start()
-    t2.start()
-    t3.start()
-    t4.start()
-
-    t1.join()
-    t2.join()
-    t3.join()
-    t4.join()
-```
-
-**Output:**
-<p align="center">
-  <img src="Output/Threading_with_queue.png" alt="Queue Output" width="80%">
-</p>
+**Example Implementation:** See [Threading_with_queue.py](Codes/Threading_with_queue.py)
 
 ```mermaid
-%%{init: {'theme': 'base', 'themeVariables': { 'lineColor': '#455A64', 'primaryColor': '#F5F5F5' }}}%%
+%%{init: {'theme': 'base', 'themeVariables': { 'lineColor': '#475569', 'primaryColor': '#f8fafc', 'primaryTextColor': '#0f172a', 'primaryBorderColor': '#cbd5e1' }}}%%
 flowchart LR
-    %% Pro Max Queue Pipe Visual
-    classDef queue fill:#E8F5E9,stroke:#2E7D32,stroke-width:3px,color:#1B5E20,font-weight:bold
-    classDef prod fill:#E3F2FD,stroke:#1565C0,stroke-width:2px,color:#0D47A1,font-weight:bold
-    classDef cons fill:#FCE4EC,stroke:#C2185B,stroke-width:2px,color:#880E4F,font-weight:bold
+    %% Premium Queue Pipe Visual
+    classDef queue fill:#dcfce7,stroke:#22c55e,stroke-width:2.5px,color:#15803d,font-weight:bold
+    classDef prod fill:#e0f2fe,stroke:#0ea5e9,stroke-width:2px,color:#0369a1,font-weight:bold
+    classDef cons fill:#ffe4e6,stroke:#e11d48,stroke-width:2px,color:#4c0519,font-weight:bold
 
-    P1(Producer Entity 1)
-    P2(Producer Entity 2)
+    P1("📤 Producer Entity 1")
+    P2("📤 Producer Entity 2")
     
-    subgraph QUEUE_PIPE [THREAD-SAFE QUEUE SYSTEM]
+    subgraph QUEUE_PIPE ["🛡️ Thread-Safe Queue System"]
         direction LR
-        Q[(FIFO BUFFER PIPELINE)]
+        Q[("📥 FIFO Buffer Pipeline")]
     end
 
-    C1(Consumer Entity 1)
-    C2(Consumer Entity 2)
+    C1("📥 Consumer Entity 1")
+    C2("📥 Consumer Entity 2")
 
     P1 == "Put Item" ==> Q
     P2 == "Put Item" ==> Q

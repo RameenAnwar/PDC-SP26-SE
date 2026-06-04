@@ -58,26 +58,27 @@ pip install celery eventlet
 **Distributed computing** is a field of computer science that studies distributed systems. A *distributed system* is a system whose components are located on different networked computers, which communicate and coordinate their actions by passing messages to one another. The components interact with each other in order to achieve a common goal.
 
 ```mermaid
-graph TD
-    %% Styling definitions for clear visual contrast
-    classDef clientClass fill:#E3F2FD,stroke:#1E88E5,stroke-width:2px,stroke-dasharray: 5 5,color:#0D47A1;
-    classDef lbClass fill:#FFF3E0,stroke:#FB8C00,stroke-width:2px,color:#E65100;
-    classDef serverClass fill:#E8F5E9,stroke:#4CAF50,stroke-width:2px,color:#1B5E20;
-    classDef dbClass fill:#EDE7F6,stroke:#5E35B1,stroke-width:2px,color:#4A148C;
+%%{init: {'theme': 'base', 'themeVariables': { 'lineColor': '#475569', 'primaryColor': '#f8fafc', 'primaryTextColor': '#0f172a', 'primaryBorderColor': '#cbd5e1' }}}%%
+flowchart TD
+    %% Premium Distributed System/Load Balancing
+    classDef client fill:#e0e7ff,stroke:#4f46e5,stroke-width:2px,color:#1e1b4b,font-weight:bold
+    classDef lb fill:#fef3c7,stroke:#f59e0b,stroke-width:2.5px,color:#78350f,font-weight:bold
+    classDef node fill:#e0f2fe,stroke:#0ea5e9,stroke-width:2px,color:#0369a1,font-weight:bold
+    classDef db fill:#dcfce7,stroke:#22c55e,stroke-width:2px,color:#15803d,font-weight:bold
 
-    User([User Client Application]) <--> |HTTP / TCP| LoadBalancer{Load Balancer}
-    LoadBalancer <--> |Route Request| Server1[Server Node A]
-    LoadBalancer <--> |Route Request| Server2[Server Node B]
-    LoadBalancer <--> |Route Request| Server3[Server Node C]
+    User(["📥 User Client Application"]) <-->|"HTTP / TCP"| LoadBalancer{"⚖️ Load Balancer"}
+    LoadBalancer <-->|"Route Request"| Server1["💻 Server Node A"]
+    LoadBalancer <-->|"Route Request"| Server2["💻 Server Node B"]
+    LoadBalancer <-->|"Route Request"| Server3["💻 Server Node C"]
     
-    Server1 <--> |Fetch / Write| DB[(Shared Central Database)]
-    Server2 <--> |Fetch / Write| DB
-    Server3 <--> |Fetch / Write| DB
+    Server1 <-->|"Fetch / Write"| DB[("💾 Shared Central Database")]
+    Server2 <-->|"Fetch / Write"| DB
+    Server3 <-->|"Fetch / Write"| DB
 
-    class User clientClass;
-    class LoadBalancer lbClass;
-    class Server1,Server2,Server3 serverClass;
-    class DB dbClass;
+    class User client
+    class LoadBalancer lb
+    class Server1,Server2,Server3 node
+    class DB db
 ```
 
 ### Key Motivations:
@@ -96,16 +97,17 @@ Distributed systems are designed in various shapes and structures depending on o
 In a client-server architecture, tasks or workloads are partitioned between the providers of a service, called **servers**, and service requesters, called **clients**.
 
 ```mermaid
+%%{init: {'theme': 'base', 'themeVariables': { 'lineColor': '#475569', 'primaryColor': '#f8fafc', 'primaryTextColor': '#0f172a', 'primaryBorderColor': '#cbd5e1', 'actorBorder': '#4f46e5', 'actorBkg': '#e0e7ff', 'actorTextColor': '#1e1b4b' }}}%%
 sequenceDiagram
     autonumber
     actor Client as Client (Requestor)
     actor Server as Server (Provider)
     
     Note over Client,Server: Connection established via TCP/IP
-    Client->>Server: 1. Send Service Request (e.g., Get Resource)
+    Client->>Server: Send Service Request
     activate Server
     Note over Server: Processes request,<br/>queries data & performs<br/>necessary computation
-    Server-->>Client: 2. Send Service Response (Requested Data)
+    Server-->>Client: Send Service Response
     deactivate Server
 ```
 
@@ -118,17 +120,19 @@ Communication is established using standard network protocols.
 An N-tier application separates the presentation, application processing, and data management functions into isolated logical and physical tiers.
 
 ```mermaid
-graph LR
-    classDef pClass fill:#E0F7FA,stroke:#00ACC1,stroke-width:2px,color:#006064;
-    classDef lClass fill:#FFFDE7,stroke:#FDD835,stroke-width:2px,color:#F57F17;
-    classDef dClass fill:#FFEBEE,stroke:#E53935,stroke-width:2px,color:#B71C1C;
+%%{init: {'theme': 'base', 'themeVariables': { 'lineColor': '#475569', 'primaryColor': '#f8fafc', 'primaryTextColor': '#0f172a', 'primaryBorderColor': '#cbd5e1' }}}%%
+flowchart LR
+    %% Premium N-Tier Architecture
+    classDef pres fill:#e0f2fe,stroke:#0ea5e9,stroke-width:2px,color:#0369a1,font-weight:bold
+    classDef logic fill:#fef3c7,stroke:#f59e0b,stroke-width:2px,color:#78350f,font-weight:bold
+    classDef data fill:#ffe4e6,stroke:#e11d48,stroke-width:2px,color:#4c0519,font-weight:bold
 
-    ClientTier[Presentation Tier<br/>Web Browser / GUI Client] <--> AppTier[Application Logic Tier<br/>Python Server / APIs]
-    AppTier <--> DataTier[Data Storage Tier<br/>Databases / File System]
+    ClientTier["🖥️ Presentation Tier <br> Web Browser / GUI Client"] <--> AppTier["⚙️ Application Logic Tier <br> Python Server / APIs"]
+    AppTier <--> DataTier["💾 Data Storage Tier <br> Databases / File System"]
 
-    class ClientTier pClass;
-    class AppTier lClass;
-    class DataTier dClass;
+    class ClientTier pres
+    class AppTier logic
+    class DataTier data
 ```
 
 ---
@@ -143,68 +147,26 @@ This implementation demonstrates a simple server that listens on a port, accepts
 
 #### Architecture Flowchart:
 ```mermaid
+%%{init: {'theme': 'base', 'themeVariables': { 'lineColor': '#475569', 'primaryColor': '#f8fafc', 'primaryTextColor': '#0f172a', 'primaryBorderColor': '#cbd5e1', 'actorBorder': '#4f46e5', 'actorBkg': '#e0e7ff', 'actorTextColor': '#1e1b4b' }}}%%
 sequenceDiagram
     autonumber
-    participant Server as Server (server.py)
-    participant Client as Client (client.py)
+    actor Server as Server (server.py)
+    actor Client as Client (client.py)
     
-    Note over Server: 1. Bind to Local Host:9999 & Listen
-    Client->>Server: 2. TCP Connection Request (socket.connect)
-    Note over Server: 3. Connection Accepted (accepts socket connection)
-    Server->>Client: 4. Send Current Server Date-Time (ASCII encoded bytes)
-    Note over Server: 5. Server Closes socket
-    Note over Client: 6. Client Decodes data & prints output
+    Note over Server: Bind to Local Host:9999 & Listen
+    Client->>Server: TCP Connection Request
+    Note over Server: Connection Accepted
+    Server->>Client: Send Current Server Date-Time
+    Note over Server: Server Closes socket
+    Note over Client: Client decodes data & prints
     Client-->>Client: Connection Closed
 ```
 
 #### Code Implementation:
 
-##### Server Code ([server.py](Codes/socket/server.py)):
-```python
-# server .py
-import socket
-import time
+##### Server Code: See [server.py](Codes/socket/server.py)
 
-# create a socket object
-serversocket=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-# get local machine name
-host=socket.gethostname()
-port=9999
-# bind to the port
-serversocket.bind((host,port))
-# queue up to 5 requests
-serversocket.listen(5)
-# establish a connection
-while True:	
-    clientsocket,addr=serversocket.accept()
-    print ("Connected with[addr],[port]%s"%str(addr))
-    currentTime=time.ctime(time.time())+"\r\n"
-    clientsocket.send(currentTime.encode('ascii'))
-    clientsocket.close()
-```
-
-##### Client Code ([client.py](Codes/socket/client.py)):
-```python
-# client .py
-import socket
-
-# create a socket object
-s =socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-# get local machine name
-host=socket.gethostname()
-port=9999
-# connection to hostname on the port .
-s.connect((host,port))
-# Receive no more than 1024 bytes
-tm=s.recv(1024)
-s.close()
-print ("Time connection server:%s"%tm.decode('ascii'))
-```
-
-#### Output Screenshot:
-<p align="center">
-  <img src="Output/client.py.png" alt="Socket Date-Time Client Output" width="80%" />
-</p>
+##### Client Code: See [client.py](Codes/socket/client.py)
 
 ---
 
@@ -214,79 +176,26 @@ This implementation demonstrates sending a file (`mytext.txt`) from a server to 
 
 #### Architecture Flowchart:
 ```mermaid
+%%{init: {'theme': 'base', 'themeVariables': { 'lineColor': '#475569', 'primaryColor': '#f8fafc', 'primaryTextColor': '#0f172a', 'primaryBorderColor': '#cbd5e1', 'actorBorder': '#4f46e5', 'actorBkg': '#e0e7ff', 'actorTextColor': '#1e1b4b' }}}%%
 sequenceDiagram
     autonumber
-    participant Server as Server (server2.py)
-    participant Client as Client (client2.py)
+    actor Server as Server (server2.py)
+    actor Client as Client (client2.py)
     
-    Note over Server: 1. Listen on Port 60000
-    Client->>Server: 2. Connects & Sends 'HelloServer!' message
-    Note over Server: 3. Read 'mytext.txt' in binary mode
-    Server->>Client: 4. Send File Data in 1024-byte buffer chunks
-    Server->>Client: 5. Send Termination String "->Thank you for connecting"
-    Note over Client: 6. Client writes incoming data to 'received.txt'
-    Note over Client: 7. Connection closed successfully
+    Note over Server: Listen on Port 60000
+    Client->>Server: Connects & Sends 'HelloServer!'
+    Note over Server: Read 'mytext.txt' in binary
+    Server->>Client: Send File Data in 1024-byte chunks
+    Server->>Client: Send Termination String
+    Note over Client: Client writes to 'received.txt'
+    Note over Client: Connection closed
 ```
 
 #### Code Implementation:
 
-##### Server Code ([server2.py](Codes/socket/server2.py)):
-```python
-# server .py
+##### Server Code: See [server2.py](Codes/socket/server2.py)
 
-import socket
-port=60000
-s =socket.socket()
-host=socket.gethostname()
-s.bind((host,port))
-s.listen(15)
-print('Server listening....')
-while True :
-    conn,addr=s.accept()
-    print ('Got connection from',addr)
-    data=conn.recv(1024)
-    print ('Server received',repr(data.decode()))
-    filename='mytext.txt'
-    f =open(filename,'rb')
-    l =f.read(1024)
-    while (l):
-        conn.send(l)
-        print ('Sent',repr(l.decode()))
-        l =f.read(1024)
-        f.close()
-        print ('Donesending')
-        conn.send('->Thank you for connecting'.encode())
-        conn.close()
-```
-
-##### Client Code ([client2.py](Codes/socket/client2.py)):
-```python
-import socket
-s =socket.socket()
-host=socket.gethostname()
-port=60000
-s.connect((host,port))
-s.send('HelloServer!'.encode())
-with open('received.txt','wb') as f:
-    print ('file opened')
-    while True :
-        print ('receiving data...')
-        data=s.recv(1024)
-        if not data:
-            break
-        print ('Data=>',data.decode())
-         # write data to a file
-        f.write(data)
-f.close()
-print ('Successfully get the file')
-s.close()
-print ('connection closed')
-```
-
-#### Output Screenshot:
-<p align="center">
-  <img src="Output/client2.py.png" alt="Socket File Transfer Output" width="80%" />
-</p>
+##### Client Code: See [client2.py](Codes/socket/client2.py)
 
 ---
 
@@ -296,20 +205,22 @@ print ('connection closed')
 
 ### Celery Architecture Diagram:
 ```mermaid
-graph LR
-    classDef clientClass fill:#E0F2F1,stroke:#009688,stroke-width:2px,color:#004D40;
-    classDef brokerClass fill:#ECEFF1,stroke:#607D8B,stroke-width:2px,color:#263238;
-    classDef workerClass fill:#FFF3E0,stroke:#FF9800,stroke-width:2px,color:#E65100;
-    classDef backendClass fill:#EDE7F6,stroke:#673AB7,stroke-width:2px,color:#311B92;
+%%{init: {'theme': 'base', 'themeVariables': { 'lineColor': '#475569', 'primaryColor': '#f8fafc', 'primaryTextColor': '#0f172a', 'primaryBorderColor': '#cbd5e1' }}}%%
+flowchart LR
+    %% Premium Celery Architecture
+    classDef client fill:#e0f2fe,stroke:#0ea5e9,stroke-width:2px,color:#0369a1,font-weight:bold
+    classDef broker fill:#fef3c7,stroke:#f59e0b,stroke-width:2.5px,color:#78350f,font-weight:bold
+    classDef worker fill:#f3e8ff,stroke:#7c3aed,stroke-width:2px,color:#2e1065,font-weight:bold
+    classDef backend fill:#dcfce7,stroke:#22c55e,stroke-width:2px,color:#15803d,font-weight:bold
 
-    Client[Client App<br/>addTask_main.py] -->|1. Delay/Apply Async| Broker{Message Broker<br/>RabbitMQ / Redis}
-    Broker -->|2. Pull Tasks| Worker[Celery Worker<br/>addTask.py]
-    Worker -->|3. Store Results| Backend[(Result Backend<br/>Database / Redis)]
+    Client["💻 Client App <br> addTask_main.py"] -->|"1. Delay/Apply Async"| Broker{"✉️ Message Broker <br> RabbitMQ / Redis"}
+    Broker -->|"2. Pull Tasks"| Worker["⚙️ Celery Worker <br> addTask.py"]
+    Worker -->|"3. Store Results"| Backend[("💾 Result Backend <br> Database / Redis")]
 
-    class Client clientClass;
-    class Broker brokerClass;
-    class Worker workerClass;
-    class Backend backendClass;
+    class Client client
+    class Broker broker
+    class Worker worker
+    class Backend backend
 ```
 
 ### Windows Setup & Execution
@@ -327,37 +238,9 @@ On Windows, Celery needs a compatible event pool execution method. You can run C
 
 #### Code Implementation:
 
-##### Task Definition ([addTask.py](Codes/Celery/addTask.py)):
-```python
-###
-## addTask.py :Executing a simple task
-###
+##### Task Definition: See [addTask.py](Codes/Celery/addTask.py)
 
-from celery import Celery
-
-app = Celery('addTask',broker='amqp://guest@localhost//')
-
-@app.task
-def add(x, y):
-    return x + y
-```
-
-##### Main Runner ([addTask_main.py](Codes/Celery/addTask_main.py)):
-```python
-###
-#addTask.py : RUN the AddTask example with 
-###
-
-import addTask
-
-if __name__ == '__main__':
-    result = addTask.add.delay(5,5)
-```
-
-#### Output Screenshot:
-<p align="center">
-  <img src="Output/celery.png" alt="Celery Distributed Task Worker Output" width="80%" />
-</p>
+##### Main Runner: See [addTask_main.py](Codes/Celery/addTask_main.py)
 
 ---
 
@@ -369,18 +252,19 @@ if __name__ == '__main__':
 
 #### Pyro4 Communication Architecture:
 ```mermaid
+%%{init: {'theme': 'base', 'themeVariables': { 'lineColor': '#475569', 'primaryColor': '#f8fafc', 'primaryTextColor': '#0f172a', 'primaryBorderColor': '#cbd5e1', 'actorBorder': '#4f46e5', 'actorBkg': '#e0e7ff', 'actorTextColor': '#1e1b4b' }}}%%
 sequenceDiagram
     autonumber
-    participant NameServer as Pyro Name Server (pyro4-ns)
-    participant Daemon as Server Daemon (pyro_server.py)
-    participant Client as Client Proxy (pyro_client.py)
+    actor NameServer as Pyro Name Server (pyro4-ns)
+    actor Daemon as Server Daemon (pyro_server.py)
+    actor Client as Client Proxy (pyro_client.py)
     
     Note over NameServer: Start Name Server (pyro4-ns)
-    Daemon->>NameServer: 1. Register "server" object with its URI
-    Client->>NameServer: 2. Query/Lookup "server"
-    NameServer-->>Client: 3. Return object URI
-    Client->>Daemon: 4. Invoke Remote Method: welcomeMessage(name)
-    Daemon-->>Client: 5. Return "Hi welcome [name]" result
+    Daemon->>NameServer: Register "server" object with its URI
+    Client->>NameServer: Query/Lookup "server"
+    NameServer-->>Client: Return object URI
+    Client->>Daemon: Invoke Remote Method: welcomeMessage(name)
+    Daemon-->>Client: Return "Hi welcome [name]" result
 ```
 
 #### Running the Example:
@@ -399,49 +283,9 @@ sequenceDiagram
 
 #### Code Implementation:
 
-##### Pyro4 Server ([pyro_server.py](Codes/Pyro4/First%20Example/pyro_server.py)):
-```python
-import Pyro4
+##### Pyro4 Server: See [pyro_server.py](Codes/Pyro4/First%20Example/pyro_server.py)
 
-class Server(object):
-    @Pyro4.expose
-    def welcomeMessage(self, name):
-        return ("Hi welcome " + str (name))
-
-def startServer():
-    server = Server()
-    # make a Pyro daemon
-    daemon = Pyro4.Daemon()             
-    # locate the name server running
-    ns = Pyro4.locateNS()
-    # register the server as a Pyro object
-    uri = daemon.register(server)  
-    # register the object with a name in the name server
-    ns.register("server", uri)   
-    # print the uri so we can use it in the client later
-    print("Ready. Object uri =", uri)
-    # start the event loop of the server to wait for calls
-    daemon.requestLoop()                   
-
-if __name__ == "__main__":
-    startServer()
-```
-
-##### Pyro4 Client ([pyro_client.py](Codes/Pyro4/First%20Example/pyro_client.py)):
-```python
-import Pyro4
-
-#uri = input("insert the PYRO4 server URI (help : PYRONAME:server) ").strip()
-name = input("What is your name? ").strip()
-# use name server object lookup uri shortcut
-server = Pyro4.Proxy("PYRONAME:server")    
-print(server.welcomeMessage(name))
-```
-
-#### Output Screenshot:
-<p align="center">
-  <img src="Output/pyro_client.png" alt="Pyro4 RMI Welcome Example Output" width="80%" />
-</p>
+##### Pyro4 Client: See [pyro_client.py](Codes/Pyro4/First%20Example/pyro_client.py)
 
 ---
 
@@ -451,17 +295,19 @@ In this configuration, a message is routed through a series of servers (forming 
 
 #### Chain Topology Flowchart:
 ```mermaid
-graph TD
-    classDef clClass fill:#E0F7FA,stroke:#00ACC1,stroke-width:2px,color:#006064;
-    classDef s1Class fill:#E8F5E9,stroke:#4CAF50,stroke-width:2px,color:#1B5E20;
-    classDef s2Class fill:#FFF3E0,stroke:#FF9800,stroke-width:2px,color:#E65100;
-    classDef s3Class fill:#EDE7F6,stroke:#673AB7,stroke-width:2px,color:#311B92;
+%%{init: {'theme': 'base', 'themeVariables': { 'lineColor': '#475569', 'primaryColor': '#f8fafc', 'primaryTextColor': '#0f172a', 'primaryBorderColor': '#cbd5e1' }}}%%
+flowchart TD
+    %% Premium Chain Topology
+    classDef clClass fill:#e0f2fe,stroke:#0ea5e9,stroke-width:2px,color:#0369a1,font-weight:bold
+    classDef s1Class fill:#dcfce7,stroke:#22c55e,stroke-width:2px,color:#15803d,font-weight:bold
+    classDef s2Class fill:#fef3c7,stroke:#f59e0b,stroke-width:2px,color:#78350f,font-weight:bold
+    classDef s3Class fill:#f3e8ff,stroke:#7c3aed,stroke-width:2px,color:#2e1065,font-weight:bold
 
-    Client[Client client_chain.py] -->|1. Process Msg| Server1[Server 1]
-    Server1 -->|2. Forward Msg| Server2[Server 2]
-    Server2 -->|3. Forward Msg| Server3[Server 3]
-    Server3 -->|4. Detect Loop & Complete Chain| Server1
-    Server1 -->|5. Return Accumulated Result Array| Client
+    Client["💻 Client <br> client_chain.py"] -->|"1. Process message"| Server1["⚙️ Server 1"]
+    Server1 -->|"2. Forward message"| Server2["⚙️ Server 2"]
+    Server2 -->|"3. Forward message"| Server3["⚙️ Server 3"]
+    Server3 -->|"4. Detect loop and complete chain"| Server1
+    Server1 -->|"5. Return accumulated result"| Client
 
     class Client clClass;
     class Server1 s1Class;
@@ -488,107 +334,12 @@ graph TD
 
 #### Code Implementation:
 
-##### Chain Topology Logic ([chainTopology.py](Codes/Pyro4/Second%20Example/chainTopology.py)):
-```python
-import Pyro4
+##### Chain Topology Logic: See [chainTopology.py](Codes/Pyro4/Second%20Example/chainTopology.py)
 
-@Pyro4.expose
-class Chain(object):
-    def __init__(self, name, current_server):
-        self.name = name
-        self.current_serverName = current_server
-        self.current_server = None
-    
-    def process(self, message):
-        if self.current_server is None:
-            self.current_server = Pyro4.core.Proxy("PYRONAME:example.chainTopology." + self.current_serverName)
-        if self.name in message:
-            print("Back at %s; the chain is closed!" % self.name)
-            return ["complete at " + self.name]
-        else:
-            print("%s forwarding the message to the object %s" % (self.name, self.current_serverName))
-            message.append(self.name)
-            result = self.current_server.process(message)
-            result.insert(0, "passed on from " + self.name)
-            return result
-```
+##### Client Runner: See [client_chain.py](Codes/Pyro4/Second%20Example/client_chain.py)
 
-##### Client Runner ([client_chain.py](Codes/Pyro4/Second%20Example/client_chain.py)):
-```python
-from __future__ import print_function
-import Pyro4
+##### Server 1: See [server_chain_1.py](Codes/Pyro4/Second%20Example/server_chain_1.py)
 
-obj = Pyro4.core.Proxy("PYRONAME:example.chainTopology.1")
-print("Result=%s" % obj.process(["hello"]))
-```
+##### Server 2: See [server_chain_2.py](Codes/Pyro4/Second%20Example/server_chain_2.py)
 
-##### Server 1 ([server_chain_1.py](Codes/Pyro4/Second%20Example/server_chain_1.py)):
-```python
-import Pyro4
-import chainTopology
-
-current_server = "1"
-next_server = "2"
-
-servername = "example.chainTopology." + current_server
-
-daemon = Pyro4.core.Daemon()
-obj = chainTopology.Chain(current_server, next_server)
-uri = daemon.register(obj)
-ns = Pyro4.locateNS()
-ns.register(servername, uri)
-
-# enter the service loop.
-
-print("server_%s started " % current_server)
-daemon.requestLoop()
-```
-
-##### Server 2 ([server_chain_2.py](Codes/Pyro4/Second%20Example/server_chain_2.py)):
-```python
-from __future__ import print_function
-import Pyro4
-import chainTopology
-
-current_server = "2"
-next_server = "3"
-
-servername = "example.chainTopology." + current_server
-
-daemon = Pyro4.core.Daemon()
-obj = chainTopology.Chain(current_server,next_server)
-uri = daemon.register(obj)
-ns = Pyro4.locateNS()
-ns.register(servername, uri)
-
-# enter the service loop.
-print("server_%s started " % current_server)
-daemon.requestLoop()
-```
-
-##### Server 3 ([server_chain_3.py](Codes/Pyro4/Second%20Example/server_chain_3.py)):
-```python
-from __future__ import print_function
-import Pyro4
-import chainTopology
-
-current_server = "3"
-next_server = "1"
-
-servername = "example.chainTopology." + current_server
-
-daemon = Pyro4.core.Daemon()
-obj = chainTopology.Chain(current_server, next_server)
-uri = daemon.register(obj)
-ns = Pyro4.locateNS()
-ns.register(servername, uri)
-
-# enter the service loop.
-print("server_%s started " % current_server)
-daemon.requestLoop()
-```
-
-#### Output Screenshot:
-<p align="center">
-  <img src="Output/client_chain.py.png" alt="Chain Topology Execution Output" width="80%" />
-</p>
+##### Server 3: See [server_chain_3.py](Codes/Pyro4/Second%20Example/server_chain_3.py)
