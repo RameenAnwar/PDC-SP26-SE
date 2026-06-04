@@ -1,104 +1,96 @@
 # Chapter 03: Process-Based Parallelism
 
-## Overview
+## Preface
 
-Welcome to the **Parallel and Distributed Computing (PDC)** documentation for Chapter 03. Moving away from the shared-memory architecture of Threading (Chapter 2), this chapter explores **Multiprocessing**, utilizing isolated memory spaces and OS-level processes to completely bypass the Python Global Interpreter Lock (GIL).
+Welcome to the academic documentation for Chapter 03 of the Parallel and Distributed Computing (PDC) course. This chapter covers **Multiprocessing** in Python, focusing on how to run independent processes to bypass the Global Interpreter Lock (GIL) and utilize multi-core processors.
 
-This guide is strictly divided into two sections: **Part 1** covers the theoretical computer science concepts behind isolated processes and inter-process communication, and **Part 2** showcases practical Python code implementations.
+This guide is divided into two sections: Section 1 explores the OS-level process management and communication theory, and Section 2 reviews the practical Python scripts and their execution outputs.
 
 ---
 
-## Table of Contents
+## Index of Topics
 
-### Part 1: Theoretical Foundations
+### Section 1: Multiprocessing Architecture
 1. [The Multiprocessing Paradigm](#1-the-multiprocessing-paradigm)
-2. [Process Management](#2-process-management)
-    - [Process Subclassing & Pools](#process-subclassing--pools)
-    - [Daemon Processes](#daemon-processes)
-3. [Inter-Process Communication (IPC)](#3-inter-process-communication-ipc)
-
-### Part 2: Practical Implementation
-4. [Implementation Breakdown & Outputs](#4-implementation-breakdown--outputs)
-    - [Basic Process Spawning](#basic-process-spawning)
-    - [Daemon Processes](#daemon-processes-1)
+2. [Operating System Process Management](#2-operating-system-process-management)
+    - [Subclassing and Workers](#subclassing-and-workers)
     - [Process Pools](#process-pools)
-    - [IPC: Communicating with Pipes](#ipc-communicating-with-pipes)
-5. [Execution Guide](#5-execution-guide)
+    - [Daemon Processes](#daemon-processes)
+3. [Inter-Process Communication (IPC) Mechanisms](#3-inter-process-communication-ipc-mechanisms)
+    - [OS Pipes](#os-pipes)
+    - [Process Barriers](#process-barriers)
+    - [Process Termination Control](#process-termination-control)
+
+### Section 2: Implementation & Code Benchmarks
+4. [Basic Process Spawning](#4-basic-process-spawning)
+5. [Configuring Background Daemons](#5-configuring-background-daemons)
+6. [Worker Recycling with Pools](#6-worker-recycling-with-pools)
+7. [IPC via Bidirectional Pipes](#7-ipc-via-bidirectional-pipes)
+8. [Barrier Synchronization](#8-barrier-synchronization)
+9. [Forceful Process Termination](#9-forceful-process-termination)
+10. [Local Execution Guide](#10-local-execution-guide)
 
 ---
 
-# PART 1: THEORETICAL FOUNDATIONS
+# SECTION 1: MULTIPROCESSING ARCHITECTURE
 
 ## 1. The Multiprocessing Paradigm
 
-Unlike Threading, Multiprocessing creates entirely independent Python processes at the operating system level. Each process receives its own Python interpreter, its own memory space, and crucially, its own Global Interpreter Lock (GIL).
+Unlike multithreading, which executes concurrent execution paths inside a shared process space, multiprocessing spawns completely isolated operating system processes. Each spawned process runs its own independent instance of the Python interpreter, maintains its own private memory space, and has its own Global Interpreter Lock (GIL).
 
-```mermaid
-graph TD
-    subgraph P1 ["Process 1"]
-        GIL1[GIL]
-        T1[Main Thread]
-    end
-    subgraph P2 ["Process 2"]
-        GIL2[GIL]
-        T2[Main Thread]
-    end
-    
-    OS["Operating System Kernel"] --> P1
-    OS --> P2
-```
+This isolation provides two major advantages:
+- **GIL Bypass:** Since each process runs its own CPython interpreter, they can execute bytecode in parallel across multiple CPU cores without being blocked by a single global lock.
+- **Fault Isolation:** A crash or segmentation fault in one child process does not corrupt the memory space or cause the termination of the parent process.
 
-- **Pros:** True parallelism capable of maximizing CPU utilization across multiple cores. Perfect for heavy mathematical computations (CPU-bound tasks).
-- **Cons:** Significantly higher memory overhead. Spinning up a new process takes more time and memory than spinning up a thread.
+However, this architecture introduces higher memory usage and startup latency compared to threads.
 
-## 2. Process Management
+## 2. Operating System Process Management
 
-### Process Subclassing & Pools
-- **Subclassing:** Similar to `threading.Thread`, you can inherit from `multiprocessing.Process` to create custom executable process architecture.
-- **Process Pools:** Creating processes manually is expensive. A Process Pool pre-allocates a set number of worker processes. Workloads are then mapped to this pool, drastically improving performance by reusing active execution units.
+Managing multiple processes efficiently requires using structured patterns provided by the operating system kernel and Python's `multiprocessing` library.
+
+### Subclassing and Workers
+
+Similar to threads, custom process behaviors can be defined by inheriting from `multiprocessing.Process` and overriding the `run()` method. This allows developers to wrap complex state and execution logic into reusable process-oriented objects.
+
+### Process Pools
+
+Spawning and destroying operating system processes is resource-intensive. To reduce this overhead, the `Pool` class maintains a set of pre-allocated worker processes. Instead of spawning a process for every task, workloads are queued and distributed among these active workers, optimizing CPU utilization.
 
 ### Daemon Processes
-A daemon process is a background process. By default, a Python script will not exit until all of its spawned child processes complete. If a process is flagged as a `daemon=True`, the main Python script will forcefully terminate it the moment the main script concludes. Useful for infinite background monitoring loops.
 
-## 3. Inter-Process Communication (IPC)
+A daemon process is a child process that runs in the background. In Python, the main program waits for all non-daemon child processes to finish before exiting. If a child process is configured as a daemon, it will be forcefully terminated by the operating system the moment the main parent process completes.
 
-Because processes do not share memory, they require explicit IPC mechanisms to exchange data.
+## 3. Inter-Process Communication (IPC) Mechanisms
 
-```mermaid
-graph LR
-    subgraph PA ["Process A"]
-        MemA[Memory A]
-    end
-    subgraph PB ["Process B"]
-        MemB[Memory B]
-    end
-    
-    PA -->|Write to Pipe| Pipe((OS Pipe))
-    Pipe -->|Read from Pipe| PB
-```
+Since processes run in isolated memory spaces, they cannot share data directly. Instead, they must use explicit Inter-Process Communication (IPC) mechanisms.
 
-- **Pipes:** A two-way connection primarily between exactly two processes. Ideal for fast, direct communication.
-- **Queues:** Thread-safe and process-safe structures allowing multiple producers and consumers to securely exchange Python objects.
+### OS Pipes
+
+A Pipe is a basic communication channel that connects two processes. It consists of two connection endpoints, allowing bidirectional data transfer. When a process sends a Python object through one end, the library serializes (pickles) the object and writes it to the pipe, where it is read and deserialized by the receiver.
+
+### Process Barriers
+
+A Barrier is a synchronization primitive used to coordinate the execution of a fixed number of processes. The barrier is initialized with a target count $N$. Processes arriving at the barrier block until all $N$ processes have reached it. Once the target count is reached, all waiting processes are unblocked simultaneously.
+
+### Process Termination Control
+
+Managing processes requires the ability to handle hung or unresponsive workers. While processes should ideally exit cleanly when their task is done, the parent process can send a SIGTERM signal to forcefully terminate a child process using the `terminate()` method.
 
 ---
----
 
-# PART 2: PRACTICAL IMPLEMENTATION
+# SECTION 2: IMPLEMENTATION & CODE BENCHMARKS
 
-## 4. Implementation Breakdown & Outputs
+## 4. Basic Process Spawning
 
-The `Chapter03` directory contains scripts demonstrating these advanced process mechanics.
+**Script name:** `spawning_processes.py`
 
-### Basic Process Spawning
-**File:** `spawning_processes.py`
+This script demonstrates spawning multiple independent processes to run a target function concurrently.
 
-**Code Snippet:**
 ```python
 import multiprocessing
 
 def myFunc(i):
     print(f'calling myFunc from process n°: {i}')
-    return
 
 if __name__ == '__main__':
     for i in range(6):
@@ -106,21 +98,25 @@ if __name__ == '__main__':
         process.start()
         process.join()
 ```
-**Expected Output:**
+
+**Expected Console Output:**
 ```text
 calling myFunc from process n°: 0
 calling myFunc from process n°: 1
 ...
 calling myFunc from process n°: 5
 ```
-*(Demonstrates basic allocation of OS-level processes bypassing the GIL).*
+
+Using `join()` ensures each process completes before the next one starts in this sequence.
 
 ---
 
-### Daemon Processes
-**File:** `run_background_processes.py`
+## 5. Configuring Background Daemons
 
-**Code Snippet:**
+**Script name:** `run_background_processes.py`
+
+This script demonstrates configuring a background daemon process that is automatically killed when the parent exits.
+
 ```python
 import multiprocessing
 import time
@@ -134,50 +130,54 @@ def foo():
 if __name__ == '__main__':
     background_process = multiprocessing.Process(name='background_process', target=foo)
     background_process.daemon = True
-    
     background_process.start()
-    # No join() means main thread finishes immediately and kills the daemon
 ```
-**Expected Output:**
+
+**Expected Console Output:**
 ```text
 Starting background_process
 ```
-*(Notice "Exiting" is never printed because the main program exits and immediately kills the daemon process).*
+
+Since the parent process finishes immediately and the child is a daemon, the child is terminated before it can print "Exiting background_process".
 
 ---
 
-### Process Pools
-**File:** `process_pool.py`
+## 6. Worker Recycling with Pools
 
-**Code Snippet:**
+**Script name:** `process_pool.py`
+
+This script uses a process pool to distribute a collection of mathematical tasks across 4 reusable worker processes.
+
 ```python
 import multiprocessing
 
 def function_square(data):
-    result = data * data
-    return result
+    return data * data
 
 if __name__ == '__main__':
-    inputs = list(range(0,100))
+    inputs = list(range(0, 100))
     pool = multiprocessing.Pool(processes=4)
     pool_outputs = pool.map(function_square, inputs)
-    
     pool.close() 
     pool.join()  
     print(f'Pool outputs: {pool_outputs}')
 ```
-**Expected Output:**
+
+**Expected Console Output:**
 ```text
 Pool outputs: [0, 1, 4, 9, 16, 25, 36, 49, 64, 81...]
 ```
-*(Demonstrates efficient mapping of 100 workloads across a limited pool of exactly 4 reusable CPU processes).*
+
+The pool handles task distribution and worker recycling internally.
 
 ---
 
-### IPC: Communicating with Pipes
-**File:** `communicating_with_pipe.py`
+## 7. IPC via Bidirectional Pipes
 
-**Code Snippet:**
+**Script name:** `communicating_with_pipe.py`
+
+This script demonstrates using a pipe to send data between processes.
+
 ```python
 import multiprocessing
 
@@ -202,43 +202,16 @@ if __name__== '__main__':
     pipe_1 = multiprocessing.Pipe(True)
     process_pipe_1 = multiprocessing.Process(target=create_items, args=(pipe_1,))
     process_pipe_1.start()
-    
-    pipe_2 = multiprocessing.Pipe(True)
-    process_pipe_2 = multiprocessing.Process(target=multiply_items, args=(pipe_1, pipe_2))
-    process_pipe_2.start()
-    
-    pipe_1[0].close()
-    pipe_2[0].close()
-    
-    try:
-        while True:
-            print(pipe_2[1].recv())
-    except EOFError:
-        print("End of stream")
 ```
-
-**Expected Output:**
-```text
-0
-1
-4
-9
-16
-25
-36
-49
-64
-81
-End of stream
-```
-*(Demonstrates raw OS-level memory bridging allowing isolated processes to exchange mathematical data successfully).*
 
 ---
 
-### Process Barrier Synchronization
-**File:** `processes_barrier.py`
+## 8. Barrier Synchronization
 
-**Code Snippet:**
+**Script name:** `processes_barrier.py`
+
+This script coordinates multiple processes using a `Barrier`, ensuring they pass a synchronization point together.
+
 ```python
 import multiprocessing
 from multiprocessing import Barrier, Lock, Process
@@ -251,73 +224,52 @@ def test_with_barrier(synchronizer, serializer):
     now = time()
     with serializer:
         print("process %s ----> %s" %(name, datetime.fromtimestamp(now)))
-
-def test_without_barrier():
-    name = multiprocessing.current_process().name
-    now = time()
-    print("process %s ----> %s" %(name, datetime.fromtimestamp(now)))
-
-if __name__ == '__main__':
-    synchronizer = Barrier(2)
-    serializer = Lock()
-    Process(name='p1 - test_with_barrier', target=test_with_barrier, args=(synchronizer, serializer)).start()
-    Process(name='p2 - test_with_barrier', target=test_with_barrier, args=(synchronizer, serializer)).start()
-    Process(name='p3 - test_without_barrier', target=test_without_barrier).start()
-    Process(name='p4 - test_without_barrier', target=test_without_barrier).start()
 ```
 
-**Expected Output:**
+**Expected Console Output:**
 ```text
 process p3 - test_without_barrier ----> 2026-06-04 22:31:12.482019
 process p1 - test_with_barrier ----> 2026-06-04 22:31:12.498112
 process p2 - test_with_barrier ----> 2026-06-04 22:31:12.498112
-process p4 - test_without_barrier ----> 2026-06-04 22:31:12.502019
 ```
-*(Demonstrates how barrier synchronization ensures p1 and p2 proceed past `synchronizer.wait()` at the exact same physical moment, while p3 and p4 run independently without synchronization).*
 
 ---
 
-### Process Termination (Killing Processes)
-**File:** `killing_processes.py`
+## 9. Forceful Process Termination
 
-**Code Snippet:**
+**Script name:** `killing_processes.py`
+
+This script demonstrates forcefully terminating an active process using the `terminate()` method.
+
 ```python
 import multiprocessing
 import time
 
 def foo():
     print('Starting function')
-    for i in range(0, 10):
-        print('-->%d\n' % i)
+    for i in range(10):
         time.sleep(1)
-    print('Finished function')
 
 if __name__ == '__main__':
     p = multiprocessing.Process(target=foo)
-    print('Process before execution:', p, p.is_alive())
     p.start()
-    print('Process running:', p, p.is_alive())
     p.terminate()
-    print('Process terminated:', p, p.is_alive())
     p.join()
-    print('Process joined:', p, p.is_alive())
     print('Process exit code:', p.exitcode)
 ```
 
-**Expected Output:**
+**Expected Console Output:**
 ```text
-Process before execution: <Process name='Process-1' parent=1234 initial> False
-Process running: <Process name='Process-1' pid=5678 parent=1234 started> True
-Process terminated: <Process name='Process-1' pid=5678 parent=1234 started> True
-Process joined: <Process name='Process-1' pid=5678 parent=1234 stopped exitcode=-15> False
 Process exit code: -15
 ```
-*(Notice how the process exit code is `-15` (SIGTERM on UNIX/Windows equivalent), proving that the child process was forcefully terminated before it could print 'Finished function' or run through all iterations).*
+
+The exit code of `-15` indicates that the process was terminated by a SIGTERM signal.
 
 ---
 
-## 5. Execution Guide
-To conduct these benchmarks locally, execute the corresponding scripts via your OS terminal. Ensure you are navigated inside the `Chapter03` directory:
+## 10. Local Execution Guide
+
+To run these multiprocessing tests, navigate to the `Chapter03` directory in your terminal and execute:
 
 ```bash
 python spawning_processes.py
