@@ -1,14 +1,14 @@
-# Chapter 03 - Process Based Parallelism in Python
+# Chapter 3 - Process Based Parallelism in Python
 
 Course materials for **Parallel and Distributed Computing (PDC)**. This chapter focuses on Python's `multiprocessing` module and demonstrates how to create, name, manage, synchronize, and communicate between processes.
 
-Repository path: [PDC-SP26-SE / Saad Hussain 23FA-051-SE / Chapter 03](https://github.com/saadh472/PDC-SP26-SE/tree/main/Saad%20Hussain%2023FA-051-SE/Chapter%2003).
+Repository path: [PDC-SP26-SE / Saad Hussain 23FA-051-SE / Chapter 3](https://github.com/saadh472/PDC-SP26-SE/tree/main/Saad%20Hussain%2023FA-051-SE/Chapter%203).
 
 ## Folder structure
 
 | Folder | Purpose |
 |--------|---------|
-| [`Code`](Code) | Python source files for Chapter 03 multiprocessing examples. |
+| [`Code`](Code) | Python source files for Chapter 3 multiprocessing examples. |
 | [`Screenshot Output`](<Screenshot Output>) | Output screenshots for the matching Python examples. |
 
 ## What is in this chapter
@@ -30,7 +30,7 @@ Repository path: [PDC-SP26-SE / Saad Hussain 23FA-051-SE / Chapter 03](https://g
 
 ## How to run
 
-From this directory (`Chapter 03`):
+From this directory (`Chapter 3`):
 
 ```bash
 cd Code
