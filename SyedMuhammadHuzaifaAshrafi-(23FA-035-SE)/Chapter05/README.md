@@ -30,15 +30,15 @@ flowchart TD
     classDef pool fill:#f3e8ff,stroke:#7c3aed,stroke-width:2px,color:#2e1065,font-weight:bold
     classDef future fill:#dcfce7,stroke:#22c55e,stroke-width:2px,color:#15803d,font-weight:bold
 
-    A["📥 Client Application <br> Submits Callables (Tasks 1..N)"] --> B{"⚙️ concurrent.futures <br> Executor Interface"}
+    A["Client Application <br> Submits Callables (Tasks 1..N)"] --> B{"concurrent.futures <br> Executor Interface"}
     
     B -->|Instantiates| C["ThreadPoolExecutor <br> (I/O-Bound Work)"]
     B -->|Instantiates| D["ProcessPoolExecutor <br> (CPU-Bound Work)"]
     
-    C -->|Spawns| E["🧵 Worker Threads <br> (Shared Memory Space)"]
-    D -->|Spawns| F["🏭 Worker Processes <br> (Isolated Memory / GIL Bypass)"]
+    C -->|Spawns| E["Worker Threads <br> (Shared Memory Space)"]
+    D -->|Spawns| F["Worker Processes <br> (Isolated Memory / GIL Bypass)"]
     
-    B -->|Returns instantly| G(("🔮 Future Objects <br> (Holds Pending Results)"))
+    B -->|Returns instantly| G(("Future Objects <br> (Holds Pending Results)"))
     
     G -->|"as_completed() / result()"| H["Client retrieves outputs"]
 
@@ -83,20 +83,20 @@ flowchart LR
     classDef kernel fill:#ffe4e6,stroke:#e11d48,stroke-width:2px,color:#4c0519,font-weight:bold
     classDef coro fill:#dcfce7,stroke:#22c55e,stroke-width:2px,color:#15803d,font-weight:bold
 
-    subgraph ASYNC_ENV ["⚙️ Asyncio Execution Thread"]
+    subgraph ASYNC_ENV ["Asyncio Execution Thread"]
         direction TB
-        EL[("🔄 Event Loop Engine <br> (Single-Threaded Multiplexer)")]
-        TQ["📥 Task / Callback Queue <br> (Runnable Coroutines)"]
+        EL[("Event Loop Engine <br> (Single-Threaded Multiplexer)")]
+        TQ["Task / Callback Queue <br> (Runnable Coroutines)"]
         
         EL <-->|Fetches & Executes| TQ
     end
 
-    C1["🧵 Coroutine A <br> (Awaiting Socket I/O)"] -->|Yields control at await| EL
-    EL -->|Registers File Descriptor| OS["💻 OS Kernel <br> (select/poll/epoll/IOCP)"]
+    C1["Coroutine A <br> (Awaiting Socket I/O)"] -->|Yields control at await| EL
+    EL -->|Registers File Descriptor| OS["OS Kernel <br> (select/poll/epoll/IOCP)"]
     
     OS -->|"Data Arrives (Ready Event)"| EL
     EL -->|Appends callback to| TQ
-    TQ -->|Resumes state| C2["🧵 Coroutine A <br> (Completed Task)"]
+    TQ -->|Resumes state| C2["Coroutine A <br> (Completed Task)"]
 
     class EL loop
     class TQ queue
@@ -137,11 +137,11 @@ flowchart TD
     classDef state fill:#fef3c7,stroke:#f59e0b,stroke-width:2px,color:#78350f,font-weight:bold
     classDef stop fill:#ffe4e6,stroke:#e11d48,stroke-width:2.5px,color:#4c0519,font-weight:bold
 
-    SS(["🏁 Start State <br> (Entry point)"])
+    SS(["Start State <br> (Entry point)"])
     S1(["State 1 <br> (Awaiting 1 sec)"])
     S2(["State 2 <br> (Awaiting 1 sec)"])
     S3(["State 3 <br> (Awaiting 1 sec)"])
-    ES(["🏁 End State <br> (Computation Finished)"])
+    ES(["End State <br> (Computation Finished)"])
 
     SS -->|Input = 1| S1
     SS -->|Input = 0| S2
@@ -193,16 +193,16 @@ flowchart TD
     classDef task fill:#e0f2fe,stroke:#0ea5e9,stroke-width:2px,color:#0369a1,font-weight:bold
     classDef gather fill:#dcfce7,stroke:#22c55e,stroke-width:2.5px,color:#15803d,font-weight:bold
 
-    EL[["🔄 asyncio Event Loop"]] -->|"create_task()"| T1["🧵 Task 1: factorial(10) <br> (Runs concurrently)"]
-    EL -->|"create_task()"| T2["🧵 Task 2: fibonacci(10) <br> (Runs concurrently)"]
-    EL -->|"create_task()"| T3["🧵 Task 3: binomial_coefficient(20, 10) <br> (Runs concurrently)"]
+    EL[["asyncio Event Loop"]] -->|"create_task()"| T1["Task 1: factorial(10) <br> (Runs concurrently)"]
+    EL -->|"create_task()"| T2["Task 2: fibonacci(10) <br> (Runs concurrently)"]
+    EL -->|"create_task()"| T3["Task 3: binomial_coefficient(20, 10) <br> (Runs concurrently)"]
 
     T1 -->|Yields control on await sleep| EL
     T2 -->|Yields control on await sleep| EL
     T3 -->|Yields control on await sleep| EL
 
-    T1 & T2 & T3 -->|Awaited via| TG{"🤝 asyncio.gather"}
-    TG -->|All finished| Out["🏁 Complete Execution & Output Results"]
+    T1 & T2 & T3 -->|Awaited via| TG{"asyncio.gather"}
+    TG -->|All finished| Out["Complete Execution & Output Results"]
 
     class EL loop
     class T1,T2,T3 task
@@ -239,12 +239,12 @@ flowchart LR
     classDef future fill:#e0e7ff,stroke:#4f46e5,stroke-width:2.5px,color:#1e1b4b,font-weight:bold
     classDef state fill:#dcfce7,stroke:#22c55e,stroke-width:2px,color:#15803d
 
-    subgraph CALLABLES ["🧵 Asynchronous Coroutines"]
+    subgraph CALLABLES ["Asynchronous Coroutines"]
         C1["first_coroutine(N) <br> (Sum N integers)"]
         C2["second_coroutine(N) <br> (Factorial of N)"]
     end
 
-    subgraph TASKS ["🔮 asyncio.Task (Subclass of asyncio.Future)"]
+    subgraph TASKS ["asyncio.Task (Subclass of asyncio.Future)"]
         T1["Task 1 <br> (Awaits C1, yields Sum)"]
         T2["Task 2 <br> (Awaits C2, yields Fact)"]
     end
@@ -252,7 +252,7 @@ flowchart LR
     C1 -->|Scheduled via create_task| T1
     C2 -->|Scheduled via create_task| T2
 
-    T1 & T2 -->|State Lifecycle| FSTATE{"🔮 Future Resolution"}
+    T1 & T2 -->|State Lifecycle| FSTATE{"Future Resolution"}
     
     FSTATE -->|PENDING| S1["Running in Event Loop"]
     FSTATE -->|FINISHED| S2["Resolved with Result / Value"]

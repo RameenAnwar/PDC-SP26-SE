@@ -35,26 +35,26 @@ flowchart TD
     classDef core fill:#e0f2fe,stroke:#0284c7,stroke-width:2px,color:#0c4a6e,font-weight:bold
     classDef task fill:#f1f5f9,stroke:#64748b,stroke-width:1.5px,color:#0f172a
 
-    subgraph Dashboard ["⚡ Parallel vs Serial Performance Dashboard"]
+    subgraph Dashboard ["Parallel vs Serial Performance Dashboard"]
         direction TB
         
-        subgraph S_TRACK ["🔴 Single-Core Serial Pipeline"]
+        subgraph S_TRACK ["Single-Core Serial Pipeline"]
             direction LR
             S1[Task 1] ==> S2[Task 2] ==> S3[Task 3] ==> S4[Task 4]
         end
         
-        subgraph P_TRACK ["🟢 Multi-Core Parallel Tracks"]
+        subgraph P_TRACK ["Multi-Core Parallel Tracks"]
             direction LR
-            subgraph CORE_A ["💻 Core 1"]
+            subgraph CORE_A ["Core 1"]
                 T1[Parallel Task A]
             end
-            subgraph CORE_B ["💻 Core 2"]
+            subgraph CORE_B ["Core 2"]
                 T2[Parallel Task B]
             end
-            subgraph CORE_C ["💻 Core 3"]
+            subgraph CORE_C ["Core 3"]
                 T3[Parallel Task C]
             end
-            subgraph CORE_D ["💻 Core 4"]
+            subgraph CORE_D ["Core 4"]
                 T4[Parallel Task D]
             end
         end
@@ -101,7 +101,7 @@ flowchart TD
     classDef misd fill:#e0f2fe,stroke:#0ea5e9,stroke-width:2px,color:#0c4a6e,font-weight:bold
     classDef mimd fill:#fef3c7,stroke:#f59e0b,stroke-width:2.5px,color:#78350f,font-weight:bold
 
-    TITLE["📊 Flynn's Classification Matrix"]
+    TITLE["Flynn's Classification Matrix"]
 
     subgraph InstructionAxis ["Instruction Stream"]
         direction TB
@@ -173,26 +173,26 @@ flowchart LR
     classDef mem fill:#dcfce7,stroke:#22c55e,stroke-width:2px,color:#15803d,font-weight:bold
     classDef bus fill:#fef3c7,stroke:#f59e0b,stroke-width:2px,color:#b45309,font-weight:bold
 
-    subgraph SHARED_SCHEMA ["🧠 Shared Address Architecture"]
+    subgraph SHARED_SCHEMA ["Shared Address Architecture"]
         direction TB
         subgraph COMPUTE_POOL ["Processors"]
             C1(Processor 1) ~~~ C2(Processor 2) ~~~ C3(Processor n)
         end
-        BUS{{"🚀 High-Speed System Bus"}}
-        RAM[("💾 Unified Shared Memory")]
+        BUS{{"High-Speed System Bus"}}
+        RAM[("Unified Shared Memory")]
         
         COMPUTE_POOL === BUS === RAM
     end
 
-    subgraph DIST_SCHEMA ["🌐 Distributed Memory Schematic"]
+    subgraph DIST_SCHEMA ["Distributed Memory Schematic"]
         direction TB
         subgraph NODE_1 ["Computing Node 1"]
-            P1(CPU) --- M1[("💾 Local RAM")]
+            P1(CPU) --- M1[("Local RAM")]
         end
         subgraph NODE_2 ["Computing Node 2"]
-            P2(CPU) --- M2[("💾 Local RAM")]
+            P2(CPU) --- M2[("Local RAM")]
         end
-        NET{{"🔌 Network Interconnect"}}
+        NET{{"Network Interconnect"}}
         
         NET <---> NODE_1
         NET <---> NODE_2
@@ -236,28 +236,28 @@ flowchart TD
     classDef thread fill:#e0f2fe,stroke:#0ea5e9,stroke-width:2px,color:#0369a1,font-weight:bold
     classDef data fill:#dcfce7,stroke:#22c55e,stroke-width:2px,color:#15803d
 
-    subgraph SHARED_MODEL ["🧵 Threads: Shared Address Space"]
+    subgraph SHARED_MODEL ["Threads: Shared Address Space"]
         direction LR
         subgraph SHARED_MEM ["Common Address Space"]
             direction TB
-            DATA[("💾 Shared Variables")]
+            DATA[("Shared Variables")]
         end
         T1(Thread 1) --- DATA
         T2(Thread 2) --- DATA
         T3(Thread 3) --- DATA
     end
 
-    subgraph PROC_MODEL ["🏭 Processes: Private Address Space"]
+    subgraph PROC_MODEL ["Processes: Private Address Space"]
         direction LR
         subgraph P1_NODE ["Process A"]
             direction TB
-            A_MEM[("💾 Private RAM")]
+            A_MEM[("Private RAM")]
         end
         subgraph P2_NODE ["Process B"]
             direction TB
-            B_MEM[("💾 Private RAM")]
+            B_MEM[("Private RAM")]
         end
-        P1_NODE <== "🔌 IPC: Message Passing" ==> P2_NODE
+        P1_NODE <== "IPC: Message Passing" ==> P2_NODE
     end
 
     class SHARED_MODEL,PROC_MODEL container
@@ -343,19 +343,19 @@ flowchart TD
     classDef scaling fill:#dcfce7,stroke:#22c55e,stroke-width:2px,color:#15803d,font-weight:bold
     classDef bottleneck fill:#ffe4e6,stroke:#e11d48,stroke-width:2px,color:#4c0519,font-weight:bold
 
-    subgraph EVAL_KPI ["📈 System Measurements"]
+    subgraph EVAL_KPI ["System Measurements"]
         direction TB
         S_RATIO["Speedup Ratio: S = T(1) / T(p)"]
         E_RATIO["Efficiency Index: E = S / p"]
     end
 
-    subgraph SCALE_PATH ["⚖️ Scaling Dynamics"]
+    subgraph SCALE_PATH ["Scaling Dynamics"]
         direction LR
         STRONG["Strong Scaling: Fixed Problem Size"]
         WEAK["Weak Scaling: Scaled Problem Size"]
     end
 
-    subgraph LIMITS ["⚠️ Critical Bottlenecks"]
+    subgraph LIMITS ["Critical Bottlenecks"]
         AMDAHL["Amdahl's Law: Sequential Limit"]
         GUSTAFSON["Gustafson's Law: Parallel Limit"]
     end
@@ -465,7 +465,7 @@ A brief overview of Python features relevant to parallel programming.
 ```mermaid
 %%{init: {'theme': 'base', 'themeVariables': { 'lineColor': '#4f46e5', 'primaryColor': '#e0e7ff', 'primaryTextColor': '#1e1b4b', 'primaryBorderColor': '#818cf8' }}}%%
 mindmap
-  root("🐍 Python Parallelism Ecosystem")
+  root("Python Parallelism Ecosystem")
     Architecture
       Dynamic Typing
       Indentation Logic
@@ -509,22 +509,22 @@ flowchart TD
     classDef lock fill:#fee2e2,stroke:#ef4444,stroke-width:2px,color:#7f1d1d,font-weight:bold
     classDef threadNode fill:#e0f2fe,stroke:#0ea5e9,stroke-width:1.5px,color:#0369a1
 
-    subgraph MultiThreading ["🧵 Python Multi-Threading"]
+    subgraph MultiThreading ["Python Multi-Threading"]
         direction TB
-        Mem[("💾 Shared RAM")]
-        Mem --- GIL{{"🔒 GIL Lock"}}
+        Mem[("Shared RAM")]
+        Mem --- GIL{{"GIL Lock"}}
         GIL ==> T1(("Thread 1"))
         GIL ==> T2(("Thread 2"))
         note1["*Concurrency via GIL Interweaving*"]
     end
     
-    subgraph MultiProcessing ["🏭 Python Multi-Processing"]
+    subgraph MultiProcessing ["Python Multi-Processing"]
         direction TB
         subgraph P1 ["Process 1"]
-            G1["🔒 GIL"] --- Th1(("Main Thread"))
+            G1["GIL"] --- Th1(("Main Thread"))
         end
         subgraph P2 ["Process 2"]
-            G2["🔒 GIL"] --- Th2(("Main Thread"))
+            G2["GIL"] --- Th2(("Main Thread"))
         end
         note2["*Parallelism via Isolated Interpreters*"]
     end

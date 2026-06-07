@@ -37,11 +37,11 @@ flowchart TD
     classDef thread fill:#dcfce7,stroke:#22c55e,stroke-width:2px,color:#15803d,font-weight:bold
     classDef mem fill:#fef3c7,stroke:#f59e0b,stroke-width:2px,color:#b45309,font-weight:bold
     
-    subgraph PROCESS ["🏭 Process Execution Environment"]
+    subgraph PROCESS ["Process Execution Environment"]
         direction TB
-        RAM[("💾 Shared Heap Memory")]
+        RAM[("Shared Heap Memory")]
         
-        subgraph THREAD_POOL ["🧵 Thread Pool"]
+        subgraph THREAD_POOL ["Thread Pool"]
             direction LR
             T1("Thread 1 Stack")
             T2("Thread 2 Stack")
@@ -86,10 +86,10 @@ flowchart LR
     classDef tMain fill:#ffe4e6,stroke:#e11d48,stroke-width:2.5px,color:#4c0519,font-weight:bold
     classDef tChild fill:#e0f2fe,stroke:#0ea5e9,stroke-width:2px,color:#0369a1,font-weight:bold
 
-    Main("💻 Main Thread")
-    Main == "t1.start()" ==> F_A("🧵 Function A")
-    Main == "t2.start()" ==> F_B("🧵 Function B")
-    Main == "t3.start()" ==> F_C("🧵 Function C")
+    Main("Main Thread")
+    Main == "t1.start()" ==> F_A("Function A")
+    Main == "t2.start()" ==> F_B("Function B")
+    Main == "t3.start()" ==> F_C("Function C")
 
     class Main tMain
     class F_A,F_B,F_C tChild
@@ -129,16 +129,16 @@ flowchart TD
     classDef tWait fill:#ffe4e6,stroke:#e11d48,stroke-width:2px,color:#4c0519,font-weight:bold
     classDef lock fill:#fef3c7,stroke:#f59e0b,stroke-width:2.5px,color:#78350f,font-weight:bold
 
-    subgraph MUTEX_LOCK ["🔒 Mutex Lock Synchronization"]
+    subgraph MUTEX_LOCK ["Mutex Lock Synchronization"]
         direction TB
-        Bouncer{{"🔑 Mutex Object"}}
-        CS[("⚡ Critical Section")]
+        Bouncer{{"Mutex Object"}}
+        CS[("Critical Section")]
         Bouncer === CS
     end
 
-    T1("🟢 Active Thread") == "Acquires Lock" ==> Bouncer
-    T2("🔴 Blocked Thread") -. "Waits for Lock" .-> Bouncer
-    T3("🔴 Blocked Thread") -. "Waits for Lock" .-> Bouncer
+    T1("Active Thread") == "Acquires Lock" ==> Bouncer
+    T2("Blocked Thread") -. "Waits for Lock" .-> Bouncer
+    T3("Blocked Thread") -. "Waits for Lock" .-> Bouncer
 
     class T1 tActive
     class T2,T3 tWait
@@ -168,8 +168,8 @@ flowchart LR
     classDef rlock fill:#f3e8ff,stroke:#7c3aed,stroke-width:2.5px,color:#2e1065,font-weight:bold
     classDef func fill:#e0f2fe,stroke:#0ea5e9,stroke-width:2px,color:#0369a1,font-weight:bold
 
-    T("🧵 Executing Thread")
-    R{{"🔄 Reentrant Lock"}}
+    T("Executing Thread")
+    R{{"Reentrant Lock"}}
     F1("Function Context A")
     F2("Function Context B")
 
@@ -200,10 +200,10 @@ flowchart TD
     classDef pass fill:#dcfce7,stroke:#22c55e,stroke-width:2px,color:#15803d,font-weight:bold
     classDef block fill:#ffe4e6,stroke:#e11d48,stroke-width:2px,color:#4c0519,font-weight:bold
 
-    subgraph SEMAPHORE_BUCKET ["🚦 Semaphore Token Bucket"]
+    subgraph SEMAPHORE_BUCKET ["Semaphore Token Bucket"]
         direction TB
-        Bucket{{"🪙 Tokens = 2"}}
-        Resource[("📦 Shared Resources")]
+        Bucket{{"Tokens = 2"}}
+        Resource[("Shared Resources")]
         Bucket === Resource
     end
 
@@ -234,9 +234,9 @@ flowchart LR
     classDef cSignal fill:#dcfce7,stroke:#22c55e,stroke-width:2px,color:#15803d,font-weight:bold
     classDef cond fill:#fef3c7,stroke:#f59e0b,stroke-width:2.5px,color:#78350f,font-weight:bold
 
-    T_Cons("📥 Consumer Thread")
-    Cond{{"🔔 Condition Variable"}}
-    T_Prod("📤 Producer Thread")
+    T_Cons("Consumer Thread")
+    Cond{{"Condition Variable"}}
+    T_Prod("Producer Thread")
 
     T_Cons == "Wait Signal" ==> Cond
     Cond -. "Blocks Execution" .-> T_Cons
@@ -267,7 +267,7 @@ flowchart TD
     classDef eFlag fill:#f3e8ff,stroke:#7c3aed,stroke-width:2.5px,color:#2e1065,font-weight:bold
     classDef tAction fill:#e0f2fe,stroke:#0ea5e9,stroke-width:2px,color:#0369a1,font-weight:bold
 
-    subgraph EVENT_SYSTEM ["🚩 Event Flag System"]
+    subgraph EVENT_SYSTEM ["Event Flag System"]
         direction LR
         Flag{"Internal Flag Status"}
     end
@@ -299,15 +299,15 @@ flowchart TD
     classDef thr fill:#e0f2fe,stroke:#0ea5e9,stroke-width:2px,color:#0369a1,font-weight:bold
     classDef pass fill:#dcfce7,stroke:#22c55e,stroke-width:2px,color:#15803d,font-weight:bold
 
-    subgraph RACE_TRACK ["🚧 Barrier Rendezvous State"]
-        B{{"🛑 Barrier Capacity = 3"}}
+    subgraph RACE_TRACK ["Barrier Rendezvous State"]
+        B{{"Barrier Capacity = 3"}}
     end
 
     T1("Thread A") == "Call wait()" ==> B
     T2("Thread B") == "Call wait()" ==> B
     T3("Thread C") == "Call wait()" ==> B
 
-    B == "Synchronized Release" ==> Phase2[("🏁 Phase 2 Execution")]
+    B == "Synchronized Release" ==> Phase2[("Phase 2 Execution")]
 
     class B bar
     class T1,T2,T3 thr
@@ -333,16 +333,16 @@ flowchart LR
     classDef prod fill:#e0f2fe,stroke:#0ea5e9,stroke-width:2px,color:#0369a1,font-weight:bold
     classDef cons fill:#ffe4e6,stroke:#e11d48,stroke-width:2px,color:#4c0519,font-weight:bold
 
-    P1("📤 Producer Entity 1")
-    P2("📤 Producer Entity 2")
+    P1("Producer Entity 1")
+    P2("Producer Entity 2")
     
-    subgraph QUEUE_PIPE ["🛡️ Thread-Safe Queue System"]
+    subgraph QUEUE_PIPE ["Thread-Safe Queue System"]
         direction LR
-        Q[("📥 FIFO Buffer Pipeline")]
+        Q[("FIFO Buffer Pipeline")]
     end
 
-    C1("📥 Consumer Entity 1")
-    C2("📥 Consumer Entity 2")
+    C1("Consumer Entity 1")
+    C2("Consumer Entity 2")
 
     P1 == "Put Item" ==> Q
     P2 == "Put Item" ==> Q

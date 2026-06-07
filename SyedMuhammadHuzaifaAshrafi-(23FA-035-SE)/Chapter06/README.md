@@ -55,7 +55,7 @@ pip install celery eventlet
 
 ## 1. Introducing Distributed Computing
 
-**Distributed computing** is a field of computer science that studies distributed systems. A *distributed system* is a system whose components are located on different networked computers, which communicate and coordinate their actions by passing messages to one another. The components interact with each other in order to achieve a common goal.
+Distributed computing is a field of computer science that studies distributed systems. A *distributed system* is a system whose components are located on different networked computers, which communicate and coordinate their actions by passing messages to one another. The components interact with each other in order to achieve a common goal.
 
 ```mermaid
 %%{init: {'theme': 'base', 'themeVariables': { 'lineColor': '#475569', 'primaryColor': '#f8fafc', 'primaryTextColor': '#0f172a', 'primaryBorderColor': '#cbd5e1' }}}%%
@@ -66,15 +66,15 @@ flowchart TD
     classDef node fill:#e0f2fe,stroke:#0ea5e9,stroke-width:2px,color:#0369a1,font-weight:bold
     classDef db fill:#dcfce7,stroke:#22c55e,stroke-width:2px,color:#15803d,font-weight:bold
 
-    User(["📥 User Client Application"]) <-->|"HTTP / TCP"| LoadBalancer{"⚖️ Load Balancer"}
-    LoadBalancer <-->|"Route Request"| Server1["💻 Server Node A"]
-    LoadBalancer <-->|"Route Request"| Server2["💻 Server Node B"]
-    LoadBalancer <-->|"Route Request"| Server3["💻 Server Node C"]
+    User(["User Client Application"]) <-->|"HTTP / TCP"| LoadBalancer{"Load Balancer"}
+    LoadBalancer -->|"Route Request"| Server1["Server Node A"]
+    LoadBalancer -->|"Route Request"| Server2["Server Node B"]
+    LoadBalancer -->|"Route Request"| Server3["Server Node C"]
     
-    Server1 <-->|"Fetch / Write"| DB[("💾 Shared Central Database")]
-    Server2 <-->|"Fetch / Write"| DB
-    Server3 <-->|"Fetch / Write"| DB
-
+    Server1 -->|"Fetch / Write"| DB[("Shared Central Database")]
+    Server2 -->|"Fetch / Write"| DB
+    Server3 -->|"Fetch / Write"| DB
+    
     class User client
     class LoadBalancer lb
     class Server1,Server2,Server3 node
@@ -103,7 +103,7 @@ sequenceDiagram
     actor Server as Server (Provider)
     
     Note over Client,Server: Connection established via TCP/IP
-    Client->>Server: Send Service Request
+    Client-->>Server: Send Service Request
     activate Server
     Note over Server: Processes request,<br/>queries data & performs<br/>necessary computation
     Server-->>Client: Send Service Response
@@ -126,9 +126,9 @@ flowchart LR
     classDef logic fill:#fef3c7,stroke:#f59e0b,stroke-width:2px,color:#78350f,font-weight:bold
     classDef data fill:#ffe4e6,stroke:#e11d48,stroke-width:2px,color:#4c0519,font-weight:bold
 
-    ClientTier["🖥️ Presentation Tier <br> Web Browser / GUI Client"] <--> AppTier["⚙️ Application Logic Tier <br> Python Server / APIs"]
-    AppTier <--> DataTier["💾 Data Storage Tier <br> Databases / File System"]
-
+    ClientTier["Presentation Tier <br> Web Browser / GUI Client"] --> AppTier["Application Logic Tier <br> Python Server / APIs"]
+    AppTier --> DataTier["Data Storage Tier <br> Databases / File System"]
+    
     class ClientTier pres
     class AppTier logic
     class DataTier data
@@ -210,9 +210,9 @@ flowchart LR
     classDef worker fill:#f3e8ff,stroke:#7c3aed,stroke-width:2px,color:#2e1065,font-weight:bold
     classDef backend fill:#dcfce7,stroke:#22c55e,stroke-width:2px,color:#15803d,font-weight:bold
 
-    Client["💻 Client App <br> addTask_main.py"] -->|"1. Delay/Apply Async"| Broker{"✉️ Message Broker <br> RabbitMQ / Redis"}
-    Broker -->|"2. Pull Tasks"| Worker["⚙️ Celery Worker <br> addTask.py"]
-    Worker -->|"3. Store Results"| Backend[("💾 Result Backend <br> Database / Redis")]
+    Client["Client App <br> addTask_main.py"] -->|"1. Delay/Apply Async"| Broker{"Message Broker <br> RabbitMQ / Redis"}
+    Broker -->|"2. Pull Tasks"| Worker["Celery Worker <br> addTask.py"]
+    Worker -->|"3. Store Results"| Backend[("Result Backend <br> Database / Redis")]
 
     class Client client
     class Broker broker
@@ -299,9 +299,9 @@ flowchart TD
     classDef s2Class fill:#fef3c7,stroke:#f59e0b,stroke-width:2px,color:#78350f,font-weight:bold
     classDef s3Class fill:#f3e8ff,stroke:#7c3aed,stroke-width:2px,color:#2e1065,font-weight:bold
 
-    Client["💻 Client <br> client_chain.py"] -->|"1. Process message"| Server1["⚙️ Server 1"]
-    Server1 -->|"2. Forward message"| Server2["⚙️ Server 2"]
-    Server2 -->|"3. Forward message"| Server3["⚙️ Server 3"]
+    Client["Client <br> client_chain.py"] -->|"1. Process message"| Server1["Server 1"]
+    Server1 -->|"2. Forward message"| Server2["Server 2"]
+    Server2 -->|"3. Forward message"| Server3["Server 3"]
     Server3 -->|"4. Detect loop and complete chain"| Server1
     Server1 -->|"5. Return accumulated result"| Client
 
@@ -312,8 +312,8 @@ flowchart TD
 ```
 
 #### Running the Example:
-1.  Start `pyro4-ns` name server.
-2.  Run the three servers in three separate terminal windows:
+1. Start `pyro4-ns` name server.
+2. Run the three servers in three separate terminal windows:
     ```bash
     python server_chain_1.py
     ```
@@ -323,7 +323,7 @@ flowchart TD
     ```bash
     python server_chain_3.py
     ```
-3.  Run the client chain runner to trigger the sequence:
+3. Run the client chain runner to trigger the sequence:
     ```bash
     python client_chain.py
     ```
@@ -339,3 +339,7 @@ flowchart TD
 ##### Server 2: See [server_chain_2.py](Codes/Pyro4/Second%20Example/server_chain_2.py)
 
 ##### Server 3: See [server_chain_3.py](Codes/Pyro4/Second%20Example/server_chain_3.py)
+
+---
+
+The above content shows the entire, complete file contents of the requested file.

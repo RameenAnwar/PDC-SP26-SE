@@ -32,11 +32,11 @@ flowchart TD
     classDef rank fill:#dcfce7,stroke:#22c55e,stroke-width:2px,color:#15803d,font-weight:bold
     classDef pool fill:#fef3c7,stroke:#f59e0b,stroke-width:2px,color:#78350f,font-weight:bold
     
-    subgraph MPI_ENV ["🖥️ MPI Execution Environment"]
+    subgraph MPI_ENV ["MPI Execution Environment"]
         direction TB
-        CW{{"🌐 MPI.COMM_WORLD"}}
+        CW{{"MPI.COMM_WORLD"}}
         
-        subgraph PROCESS_POOL ["⚙️ Process Pool"]
+        subgraph PROCESS_POOL ["Process Pool"]
             direction LR
             P0(["Rank 0"])
             P1(["Rank 1"])
@@ -205,7 +205,7 @@ flowchart TD
     P2[/"Rank 1 <br> Vector 2"/]
     PX[/"Rank N <br> Vector N"/]
 
-    Sum{{"➕ MPI.SUM"}}
+    Sum{{"MPI.SUM"}}
     Root[("Rank 0 <br> Result = V1 + V2 + ... VN")]
 
     P1 -.-> Sum
@@ -231,7 +231,7 @@ flowchart TD
     classDef grid fill:#ffe4e6,stroke:#e11d48,stroke-width:2px,color:#4c0519,font-weight:bold
     classDef bg fill:#f1f5f9,stroke:#94a3b8,stroke-width:2px,color:#334155,font-weight:bold
 
-    subgraph TOPOLOGY ["🌐 2D Cartesian Virtual Grid"]
+    subgraph TOPOLOGY ["2D Cartesian Virtual Grid"]
         direction TB
         P0((P0)) --- P1((P1)) --- P2((P2))
         P3((P3)) --- P4((P4)) --- P5((P5))
