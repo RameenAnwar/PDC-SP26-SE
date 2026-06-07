@@ -32,15 +32,15 @@ Files (detailed)
 Run & examples
 - Run a simple spawn example:
 ```bash
-python Chapter03/spawning_processes.py
+python Chap-3/FIles/spawning_processes.py
 ```
 - Run the pool example:
 ```bash
-python Chapter03/process_pool.py
+python Chap-3/FIles/process_pool.py
 ```
 - Run producer/consumer (queue):
 ```bash
-python Chapter03/communicating_with_queue.py
+python Chap-3/FIles/communicating_with_queue.py
 ```
 
 Design patterns illustrated
@@ -55,8 +55,8 @@ flowchart LR
   Main[Main process]
   Main --> Producer[Producer process]
   Main --> Consumer[Consumer process]
-  Producer -->|put(item)| Q[Queue]
-  Q -->|get()| Consumer
+  Producer -->|put item| Q[Queue]
+  Q -->|get| Consumer
   Producer -->|join| Main
   Consumer -->|join| Main
 ```

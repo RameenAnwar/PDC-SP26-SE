@@ -30,19 +30,19 @@ Modernization notes
 Quick run examples
 - Run the task example (modernized approach recommended):
 ```bash
-python Chapter05/asyncio_task_manipulation.py
+python Chap-5/Files/asyncio_task_manipulation.py
 ```
 - Test executor performance comparison:
 ```bash
-python Chapter05/concurrent_futures_pooling.py
+python Chap-5/Files/concurrent_futures_pooling.py
 ```
 
 Architecture & diagrams
 ```mermaid
 flowchart LR
-  Loop[Event Loop]
-  Loop --> TaskA[Task A (coroutine)]
-  Loop --> TaskB[Task B (coroutine)]
+    Loop[Event Loop]
+    Loop --> TaskA[Task A - coroutine]
+    Loop --> TaskB[Task B - coroutine]
   Loop --> Callbacks[call_later / callbacks]
   Loop --> Executors
   Executors --> T[ThreadPoolExecutor]

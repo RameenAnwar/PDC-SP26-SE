@@ -30,13 +30,13 @@ Files (detailed)
 Run & example commands
 - Run 4 ranks:
 ```bash
-mpirun -n 4 python Chapter04/helloworld_MPI.py
-mpirun -n 4 python Chapter04/pointToPointCommunication.py
+mpirun -n 4 python Chap-4/Files/helloworld_MPI.py
+mpirun -n 4 python Chap-4/Files/pointToPointCommunication.py
 ```
 - Example: run `scatter`/`gather` with 4 processes:
 ```bash
-mpirun -n 4 python Chapter04/scatter.py
-mpirun -n 4 python Chapter04/gather.py
+mpirun -n 4 python Chap-4/Files/scatter.py
+mpirun -n 4 python Chap-4/Files/gather.py
 ```
 
 Common patterns & gotchas
@@ -47,7 +47,7 @@ Common patterns & gotchas
 Detailed example: scatter -> local compute -> gather
 ```mermaid
 flowchart LR
-  Root[Rank 0 (root)]
+  Root[Rank 0 - root]
   Root -->|scatter chunks| R1[Rank 1]
   Root -->|scatter chunks| R2[Rank 2]
   R1 -->|local compute| R1
