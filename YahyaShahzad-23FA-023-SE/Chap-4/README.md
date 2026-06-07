@@ -65,7 +65,9 @@ flowchart TB
     P1 --- P3[rank3]
     P2 --- P3
   end
-  note right of P0: up/down/left/right neighbours via Cart.Create
+  note right of P0
+    up/down/left/right neighbours via Cart.Create
+  end note
 ```
 
 Debugging tips
