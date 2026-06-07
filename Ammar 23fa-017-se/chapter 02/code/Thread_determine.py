@@ -2,21 +2,21 @@ import threading
 import time
 
 def function_A():
-    print (threading.currentThread().getName()+str('--> starting \n'))
+    print (threading.currentThread().getName()+str('--> starting '))
     time.sleep(2)
-    print (threading.currentThread().getName()+str( '--> exiting \n'))
+    print (threading.currentThread().getName()+str( '--> exiting '))
     return
 
 def function_B():
-    print (threading.currentThread().getName()+str('--> starting \n'))
+    print (threading.currentThread().getName()+str('--> starting '))
     time.sleep(2)
-    print (threading.currentThread().getName()+str( '--> exiting \n'))
+    print (threading.currentThread().getName()+str( '--> exiting '))
     return
 
 def function_C():
-    print (threading.currentThread().getName()+str('--> starting \n'))
+    print (threading.currentThread().getName()+str('--> starting '))
     time.sleep(2)
-    print (threading.currentThread().getName()+str( '--> exiting \n'))
+    print (threading.currentThread().getName()+str( '--> exiting '))
     return
 
 

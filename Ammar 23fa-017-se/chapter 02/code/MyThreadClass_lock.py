@@ -17,9 +17,9 @@ class MyThreadClass (Thread):
       threadLock.acquire()      
       print ("---> " + self.name + \
              " running, belonging to process ID "\
-             + str(os.getpid()) + "\n")
+             + str(os.getpid()) )
       time.sleep(self.duration)
-      print ("---> " + self.name + " over\n")
+      print ("---> " + self.name + " over ")
       #Release the Lock
       threadLock.release()
 

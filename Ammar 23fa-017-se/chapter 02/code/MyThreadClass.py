@@ -11,9 +11,9 @@ class MyThreadClass (Thread):
    def run(self):
       print ("---> " + self.name + \
              " running, belonging to process ID "\
-             + str(os.getpid()) + "\n")
+             + str(os.getpid()) )
       time.sleep(self.duration)
-      print ("---> " + self.name + " over\n")
+      print ("---> " + self.name + " over ")
 
 
 def main():

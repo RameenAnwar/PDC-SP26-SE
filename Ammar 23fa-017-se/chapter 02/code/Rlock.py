@@ -21,22 +21,22 @@ class Box:
             self.execute(-1)
 
 def adder(box, items):
-    print("N° {} items to ADD \n".format(items))
+    print("N° {} items to ADD ".format(items))
     while items:
         box.add()
         time.sleep(1)
         items -= 1
-        print("ADDED one item -->{} item to ADD \n".format(items))
+        print("ADDED one item -->{} item to ADD ".format(items))
 
 
 
 def remover(box, items):
-    print("N° {} items to REMOVE \n".format(items))
+    print("N° {} items to REMOVE ".format(items))
     while items:
         box.remove()
         time.sleep(1)
         items -= 1
-        print("REMOVED one item -->{} item to REMOVE \n".format(items))
+        print("REMOVED one item -->{} item to REMOVE ".format(items))
 
 
 def main():

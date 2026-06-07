@@ -16,7 +16,7 @@ class Producer(Thread):
         for i in range(5):
             item = random.randint(0, 256)
             self.queue.put(item)
-            print('Producer notify : item N°%d appended to queue by %s\n'\
+            print('Producer notify : item N°%d appended to queue by %s'\
                   % (item, self.name))
             time.sleep(1)
 
