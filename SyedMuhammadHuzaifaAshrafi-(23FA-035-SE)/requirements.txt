@@ -1,0 +1,10 @@
+# External Python dependencies for the Parallel & Distributed Computing course
+
+# Chapter 4: Message Passing
+mpi4py>=3.1.0
+numpy>=1.21.0
+
+# Chapter 6: Distributed Python (Celery and Pyro4)
+Pyro4>=4.82
+celery>=5.2.0
+eventlet>=0.33.0  # Mandatory for running Celery workers on Windows
