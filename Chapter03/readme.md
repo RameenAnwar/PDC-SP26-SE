@@ -1,3 +1,6 @@
+#syedazhar
+
+
 # Chapter 03: Process-Based Parallelism
 
 ## Overview
@@ -69,11 +72,7 @@ graph LR
     subgraph PA ["Process A"]
         MemA[Memory A]
     end
-    subgraph PB ["Process B"]
-        MemB[Memory B]
-    end
-    
-    PA -->|Write to Pipe| Pipe((OS Pipe))
+ pe))
     Pipe -->|Read from Pipe| PB
 ```
 
