@@ -15,36 +15,65 @@
 ---
 
 ## Overview
-This chapter explores concurrency using:
-- `asyncio` (cooperative multitasking)
-- `concurrent.futures` (thread/process-based parallelism)
+This chapter explains Python concurrency using:
+- `asyncio` (cooperative multitasking via event loop)
+- `concurrent.futures` (parallel execution using threads/processes)
 
-It demonstrates:
-- Coroutine execution model
-- Event loop scheduling
-- Futures and callbacks
-- Thread vs Process execution comparison
+It covers:
+- Coroutines
+- Event Loop scheduling
+- Futures
+- Callbacks
+- Thread vs Process execution
 
 ---
 
-## Files (Detailed)
-- `asyncio_coroutine.py` — Modern coroutine state machine using `async/await`
-- `asyncio_event_loop.py` — Event loop with delayed callbacks (`call_later`)
-- `asyncio_task_manipulation.py` — Concurrent execution of tasks (factorial, fibonacci, binomial)
-- `asyncio_and_futures.py` — Future object handling with async completion
-- `concurrent_futures_pooling.py` — Comparison of sequential, thread pool, and process pool execution
+## Files Overview
+- `asyncio_coroutine.py` → async/await based coroutine flow
+- `asyncio_event_loop.py` → event loop + delayed callbacks
+- `asyncio_task_manipulation.py` → concurrent task execution
+- `asyncio_and_futures.py` → Future object handling
+- `concurrent_futures_pooling.py` → performance comparison
 
 ---
 
 ## Modernization Notes
-- Replaced `@asyncio.coroutine` and `yield from` with `async def` and `await`
-- Replaced `get_event_loop()` with `asyncio.run()`
-- Improved readability and performance
-- Compatible with Python 3.7+
+- `yield from` replaced with `await`
+- `@asyncio.coroutine` removed
+- `asyncio.run()` used instead of manual event loop
+- Fully compatible with Python 3.7+
 
 ---
 
-## Quick Run Examples
-```bash
-python Chap-5/Files/asyncio_task_manipulation.py
-python Chap-5/Files/concurrent_futures_pooling.py
+## Architecture Diagram
+
+```mermaid
+flowchart LR
+
+    Loop[Event Loop]
+
+    TaskA[Coroutine Task A]
+    TaskB[Coroutine Task B]
+    Callback[call_later Callback]
+
+    Executors[Executors]
+    ThreadPool[ThreadPoolExecutor]
+    ProcessPool[ProcessPoolExecutor]
+
+    Loop --> TaskA
+    Loop --> TaskB
+    Loop --> Callback
+    Loop --> Executors
+
+    Executors --> ThreadPool
+    Executors --> ProcessPool
+
+    classDef loop fill:#1e3a8a,stroke:#0f172a,color:#ffffff;
+    classDef task fill:#0f766e,stroke:#064e3b,color:#ffffff;
+    classDef callback fill:#f97316,stroke:#9a3412,color:#ffffff;
+    classDef executor fill:#7c3aed,stroke:#4c1d95,color:#ffffff;
+
+    class Loop loop;
+    class TaskA,TaskB task;
+    class Callback callback;
+    class Executors,ThreadPool,ProcessPool executor;
