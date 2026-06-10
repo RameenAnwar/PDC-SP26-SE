@@ -1,89 +1,220 @@
-# Chapter 03 - Process Synchronization and Communication
+23fa-054-se
+M.Ahmed Shah
+# Chapter 03: Process-Based Parallelism
 
-## Introduction
+## Overview
 
-Process synchronization is a fundamental concept in Parallel and Distributed Computing. When multiple processes execute concurrently, they often need to access shared resources. Without proper synchronization, processes may interfere with each other, leading to inconsistent data, race conditions, and unpredictable results.
+Welcome to the **Parallel and Distributed Computing (PDC)** documentation for Chapter 03. Moving away from the shared-memory architecture of Threading (Chapter 2), this chapter explores **Multiprocessing**, utilizing isolated memory spaces and OS-level processes to completely bypass the Python Global Interpreter Lock (GIL).
 
-This chapter focuses on techniques used to coordinate processes and manage their access to shared resources. Python provides several mechanisms for process synchronization, including locks, semaphores, queues, and pipes. These tools allow processes to communicate safely and work together without conflicts.
+This guide is strictly divided into two sections: **Part 1** covers the theoretical computer science concepts behind isolated processes and inter-process communication, and **Part 2** showcases practical Python code implementations.
 
-## Objectives of Chapter 03
+---
 
-1. Understand the need for process synchronization
-2. Learn about race conditions and critical sections
-3. Implement locks in Python
-4. Implement semaphores for resource management
-5. Use events for process signaling
-6. Use queues for interprocess communication
-7. Understand deadlock and starvation concepts
-8. Compare different synchronization mechanisms
+## Table of Contents
 
-## Concepts Covered
+### Part 1: Theoretical Foundations
+1. [The Multiprocessing Paradigm](#1-the-multiprocessing-paradigm)
+2. [Process Management](#2-process-management)
+    - [Process Subclassing & Pools](#process-subclassing--pools)
+    - [Daemon Processes](#daemon-processes)
+3. [Inter-Process Communication (IPC)](#3-inter-process-communication-ipc)
 
-### Race Condition
+### Part 2: Practical Implementation
+4. [Implementation Breakdown & Outputs](#4-implementation-breakdown--outputs)
+    - [Basic Process Spawning](#basic-process-spawning)
+    - [Daemon Processes](#daemon-processes-1)
+    - [Process Pools](#process-pools)
+    - [IPC: Communicating with Pipes](#ipc-communicating-with-pipes)
+5. [Execution Guide](#5-execution-guide)
 
-A race condition occurs when multiple processes access shared data concurrently and the final result depends on the order of execution. Race conditions are difficult to debug because they occur randomly.
+---
 
-Example:
-- Process A reads value 5
-- Process B reads value 5
-- Process A writes 6
-- Process B writes 6
-- Final value is 6 instead of 7
+# PART 1: THEORETICAL FOUNDATIONS
 
-### Critical Section
+## 1. The Multiprocessing Paradigm
 
-A critical section is a block of code that accesses shared resources. Rules for critical sections:
+Unlike Threading, Multiprocessing creates entirely independent Python processes at the operating system level. Each process receives its own Python interpreter, its own memory space, and crucially, its own Global Interpreter Lock (GIL).
 
-- Mutual Exclusion - Only one process in critical section at a time
-- Progress - Processes outside critical section cannot block others
-- Bounded Waiting - No process waits indefinitely
+```mermaid
+graph TD
+    subgraph P1 ["Process 1"]
+        GIL1[GIL]
+        T1[Main Thread]
+    end
+    subgraph P2 ["Process 2"]
+        GIL2[GIL]
+        T2[Main Thread]
+    end
+    
+    OS["Operating System Kernel"] --> P1
+    OS --> P2
+```
 
-### Lock
+- **Pros:** True parallelism capable of maximizing CPU utilization across multiple cores. Perfect for heavy mathematical computations (CPU-bound tasks).
+- **Cons:** Significantly higher memory overhead. Spinning up a new process takes more time and memory than spinning up a thread.
 
-Lock is the simplest synchronization primitive. Only one process can acquire a lock at a time.
+## 2. Process Management
 
-Methods:
-- acquire() - Gets the lock
-- release() - Releases the lock
+### Process Subclassing & Pools
+- **Subclassing:** Similar to `threading.Thread`, you can inherit from `multiprocessing.Process` to create custom executable process architecture.
+- **Process Pools:** Creating processes manually is expensive. A Process Pool pre-allocates a set number of worker processes. Workloads are then mapped to this pool, drastically improving performance by reusing active execution units.
 
-### RLock (Reentrant Lock)
+### Daemon Processes
+A daemon process is a background process. By default, a Python script will not exit until all of its spawned child processes complete. If a process is flagged as a `daemon=True`, the main Python script will forcefully terminate it the moment the main script concludes. Useful for infinite background monitoring loops.
 
-RLock can be acquired multiple times by the same process. Useful when a process needs to re-enter a critical section.
+## 3. Inter-Process Communication (IPC)
 
-### Semaphore
+Because processes do not share memory, they require explicit IPC mechanisms to exchange data.
 
-Semaphore allows a fixed number of processes to access a resource.
+```mermaid
+graph LR
+    subgraph PA ["Process A"]
+        MemA[Memory A]
+    end
+    subgraph PB ["Process B"]
+        MemB[Memory B]
+    end
+    
+    PA -->|Write to Pipe| Pipe((OS Pipe))
+    Pipe -->|Read from Pipe| PB
+```
 
-Types:
-- Counting Semaphore - Allows N processes
-- Binary Semaphore - Allows 1 process
+- **Pipes:** A two-way connection primarily between exactly two processes. Ideal for fast, direct communication.
+- **Queues:** Thread-safe and process-safe structures allowing multiple producers and consumers to securely exchange Python objects.
 
-### Event
+---
+---
 
-Event allows processes to communicate state changes.
+# PART 2: PRACTICAL IMPLEMENTATION
 
-Methods:
-- set() - Sets the event
-- clear() - Clears the event
-- wait() - Waits for event
-- is_set() - Checks event state
+## 4. Implementation Breakdown & Outputs
 
-### Condition
+The `Chapter03` directory contains scripts demonstrating these advanced process mechanics.
 
-Condition allows processes to wait for specific conditions to become true. More flexible than Event.
+### Basic Process Spawning
+**File:** `spawning_processes.py`
 
-### Queue
-
-Queue provides thread-safe and process-safe data exchange. Multiple processes can put and get items from a queue.
-
-### Pipe
-
-Pipe provides a two-way communication channel between two processes.
-
-## Python Modules Used
-
+**Code Snippet:**
 ```python
 import multiprocessing
-from multiprocessing import Lock, Semaphore, Event, Condition, Queue, Pipe
+
+def myFunc(i):
+    print(f'calling myFunc from process n°: {i}')
+    return
+
+if __name__ == '__main__':
+    for i in range(6):
+        process = multiprocessing.Process(target=myFunc, args=(i,))
+        process.start()
+        process.join()
+```
+**Expected Output:**
+```text
+calling myFunc from process n°: 0
+calling myFunc from process n°: 1
+...
+calling myFunc from process n°: 5
+```
+*(Demonstrates basic allocation of OS-level processes bypassing the GIL).*
+
+---
+
+### Daemon Processes
+**File:** `run_background_processes.py`
+
+**Code Snippet:**
+```python
+import multiprocessing
 import time
-import random
+
+def foo():
+    name = multiprocessing.current_process().name
+    print(f"Starting {name}")
+    time.sleep(2)
+    print(f"Exiting {name}")
+
+if __name__ == '__main__':
+    background_process = multiprocessing.Process(name='background_process', target=foo)
+    background_process.daemon = True
+    
+    background_process.start()
+    # No join() means main thread finishes immediately and kills the daemon
+```
+**Expected Output:**
+```text
+Starting background_process
+```
+*(Notice "Exiting" is never printed because the main program exits and immediately kills the daemon process).*
+
+---
+
+### Process Pools
+**File:** `process_pool.py`
+
+**Code Snippet:**
+```python
+import multiprocessing
+
+def function_square(data):
+    result = data * data
+    return result
+
+if __name__ == '__main__':
+    inputs = list(range(0,100))
+    pool = multiprocessing.Pool(processes=4)
+    pool_outputs = pool.map(function_square, inputs)
+    
+    pool.close() 
+    pool.join()  
+    print(f'Pool outputs: {pool_outputs}')
+```
+**Expected Output:**
+```text
+Pool outputs: [0, 1, 4, 9, 16, 25, 36, 49, 64, 81...]
+```
+*(Demonstrates efficient mapping of 100 workloads across a limited pool of exactly 4 reusable CPU processes).*
+
+---
+
+### IPC: Communicating with Pipes
+**File:** `communicating_with_pipe.py`
+
+**Code Snippet:**
+```python
+import multiprocessing
+
+def create_items(pipe):
+    output_pipe, _ = pipe
+    for item in range(10):
+        output_pipe.send(item)
+    output_pipe.close()
+
+def multiply_items(pipe_1, pipe_2):
+    close, input_pipe = pipe_1
+    close.close()
+    output_pipe, _ = pipe_2
+    try:
+        while True:
+            item = input_pipe.recv()
+            output_pipe.send(item * item)
+    except EOFError:
+        output_pipe.close()
+
+if __name__== '__main__':
+    pipe_1 = multiprocessing.Pipe(True)
+    process_pipe_1 = multiprocessing.Process(target=create_items, args=(pipe_1,))
+    process_pipe_1.start()
+```
+*(Demonstrates raw OS-level memory bridging allowing isolated processes to exchange mathematical data successfully).*
+
+---
+
+## 5. Execution Guide
+To conduct these benchmarks locally, execute the corresponding scripts via your OS terminal. Ensure you are navigated inside the `Chapter03` directory:
+
+```bash
+python spawning_processes.py
+python run_background_processes.py
+python process_pool.py
+python communicating_with_pipe.py
+```
