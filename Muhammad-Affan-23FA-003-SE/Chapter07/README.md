@@ -44,7 +44,6 @@ graph TD
 ## 2. Cloud Architecture & Service Models
 
 Cloud services are structured into three main models, offering varying levels of control and management.
-
 ```mermaid
 graph BT
     %% Styling Definition
@@ -52,7 +51,7 @@ graph BT
     classDef paas fill:#F4D03F,stroke:#D4AC0D,stroke-width:2px,color:#000;
     classDef saas fill:#5DADE2,stroke:#2980B9,stroke-width:2px,color:#fff;
 
-    subgraph Service Stack (Lower Level to User Level)
+    subgraph Service_Stack["Service Stack (Lower Level to User Level)"]
         IaaS[IaaS <br/> Infrastructure as a Service <br/> Rent Virtual Machines & Storage]:::iaas
         PaaS[PaaS <br/> Platform as a Service <br/> Build & Run Apps without OS Setup]:::paas
         SaaS[SaaS <br/> Software as a Service <br/> End-user applications ready-to-use]:::saas
