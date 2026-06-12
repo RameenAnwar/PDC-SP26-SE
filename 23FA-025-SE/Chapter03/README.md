@@ -1,276 +1,128 @@
 # Chapter 3: Process-Based Parallelism
 
-> **Comprehensive Theory and Practical Implementation Guide**
-> This chapter focuses on concurrency using multiple processes in Python, bypassing the Global Interpreter Lock (GIL) to achieve true parallelism for CPU-bound tasks.
+## Overview
 
----
+This chapter explains process-based concurrency in Python using the `multiprocessing` module. Unlike threads, processes run independently and bypass the Global Interpreter Lock (GIL), making them suitable for CPU-intensive tasks that require true parallel execution.
 
-## Table of Contents
-1. [Understanding Python's multiprocessing module](#1-understanding-pythons-multiprocessing-module)
-2. [Spawning a process](#2-spawning-a-process)
-   - [2.1 Spawning Processes from a Separate Module](#21-spawning-processes-from-a-separate-module)
-3. [Naming a process](#3-naming-a-process)
-4. [Running processes in the background](#4-running-processes-in-the-background)
-   - [4.1 Non-Daemon Background Processes](#41-non-daemon-background-processes)
-5. [Killing a process](#5-killing-a-process)
-6. [Defining processes in a subclass](#6-defining-processes-in-a-subclass)
-7. [Using a queue to exchange data](#7-using-a-queue-to-exchange-data)
-8. [Using pipes to exchange objects](#8-using-pipes-to-exchange-objects)
-9. [Synchronizing processes](#9-synchronizing-processes)
-10. [Using a process pool](#10-using-a-process-pool)
+The chapter covers both theoretical concepts and practical implementations, including process creation, communication, synchronization, and process pools.
 
 ---
 
 ## 1. Understanding Python's multiprocessing module
-The `multiprocessing` module allows the creation of isolated processes, each running its own Python interpreter. 
-- **Bypassing the GIL:** Unlike the `threading` module, `multiprocessing` sidesteps the Global Interpreter Lock (GIL). This makes it perfectly suited for CPU-bound tasks.
-- **Process Isolation:** Each process has its own memory space, which avoids data corruption by race conditions but requires specialized mechanisms like Pipes or Queues to communicate.
 
-```mermaid
-%%{init: {'theme': 'base', 'themeVariables': { 'lineColor': '#475569', 'primaryColor': '#f8fafc', 'primaryTextColor': '#0f172a', 'primaryBorderColor': '#cbd5e1' }}}%%
-flowchart TD
-    %% Premium Process Isolation Visual
-    classDef process fill:#e0f2fe,stroke:#0ea5e9,stroke-width:2px,color:#0369a1,font-weight:bold
-    classDef memory fill:#fef3c7,stroke:#f59e0b,stroke-width:2px,color:#78350f,font-weight:bold
+The `multiprocessing` module enables programs to create separate processes, each with its own Python interpreter and memory space.
 
-    subgraph SYSTEM ["🖥️ Operating System Process Space"]
-        direction LR
-        P1("🏭 Process 1")
-        P2("🏭 Process 2")
-        P3("🏭 Process N")
-        
-        M1[("💾 Private Memory Space 1")]
-        M2[("💾 Private Memory Space 2")]
-        M3[("💾 Private Memory Space N")]
-        
-        P1 <--> M1
-        P2 <--> M2
-        P3 <--> M3
-    end
+### Key Points
 
-    class P1,P2,P3 process
-    class M1,M2,M3 memory
-```
+- **Bypassing the GIL:** CPU-bound tasks can execute in parallel.
+- **Process Isolation:** Processes do not share memory by default and communicate using Pipes and Queues.
 
-## 2. Spawning a process
-A process is created by instantiating the `multiprocessing.Process` object and passing a target function.
-- `start()` initiates the process.
-- `join()` blocks the main process until the spawned process has completed.
+---
 
-**Example Implementation:** See [spawning_processes.py](Codes/spawning_processes.py)
+## 2. Spawning a Process
 
-```mermaid
-%%{init: {'theme': 'base', 'themeVariables': { 'lineColor': '#475569', 'primaryColor': '#f8fafc', 'primaryTextColor': '#0f172a', 'primaryBorderColor': '#cbd5e1' }}}%%
-flowchart LR
-    %% Premium Process Spawning Model
-    classDef tMain fill:#ffe4e6,stroke:#e11d48,stroke-width:2.5px,color:#4c0519,font-weight:bold
-    classDef tChild fill:#e0f2fe,stroke:#0ea5e9,stroke-width:2px,color:#0369a1,font-weight:bold
+A new process can be created using the `multiprocessing.Process` class and assigning a target function to execute.
 
-    Main("💻 Main Process")
-    Main == "process.start()" ==> P_Child("⚙️ Child Process")
-    P_Child -. "Execution" .-> Task("myFunc Target")
-    Task == "process.join()" ==> Main
+### Important Methods
 
-    class Main tMain
-    class P_Child,Task tChild
-```
+- `start()` launches the process.
+- `join()` waits until the child process completes.
+
+**Example Implementation:** `spawning_processes.py`
 
 ### 2.1 Spawning Processes from a Separate Module
-Instead of declaring the worker function in the same module, we can define the function in an external module and import it.
 
-**Worker Module:** See [myFunc.py](Codes/myFunc.py)
+Instead of defining the target function in the same file, it can be placed in another module and imported when needed.
 
-**Spawning Script:** See [spawning_processes_namespace.py](Codes/spawning_processes_namespace.py)
+**Worker Module:** `myFunc.py`
 
-## 3. Naming a process
-Naming processes helps in debugging and identifying which process is executing. Use the `name` parameter in `multiprocessing.Process` or `multiprocessing.current_process().name` to differentiate them.
+**Spawning Script:** `spawning_processes_namespace.py`
 
-**Example Implementation:** See [naming_processes.py](Codes/naming_processes.py)
+---
 
-```mermaid
-%%{init: {'theme': 'base', 'themeVariables': { 'lineColor': '#475569', 'primaryColor': '#f8fafc', 'primaryTextColor': '#0f172a', 'primaryBorderColor': '#cbd5e1' }}}%%
-flowchart TD
-    %% Premium Naming Visual
-    classDef processT fill:#fef3c7,stroke:#f59e0b,stroke-width:2.5px,color:#78350f,font-weight:bold
+## 3. Naming a Process
 
-    Parent("💻 Main Process")
-    Parent ==> Named["⚙️ Process: 'myFunc process'"]
-    Parent ==> Default["⚙️ Process: 'Process-2'"]
+Assigning names to processes makes debugging and monitoring easier.
 
-    class Named,Default processT
-```
+**Example Implementation:** `naming_processes.py`
 
-## 4. Running processes in the background
-Processes can be set as `daemon=True` to run in the background. A background (daemon) process will be terminated abruptly when the main program exits, without completing its tasks or cleaning up resources.
+---
 
-**Example Implementation:** See [run_background_processes.py](Codes/run_background_processes.py)
+## 4. Running Processes in the Background
 
-```mermaid
-sequenceDiagram
-    autonumber
-    actor M as Main Process
-    actor D as Daemon Process
-    actor N as Non-Daemon Process
+Processes can operate in the background by setting `daemon=True`.
 
-    M->>D: start()
-    M->>N: start()
-    Note over N: Main process waits for<br/>non-daemon to finish
-    N-->>M: complete
-    Note over M,D: Main completes.<br/>Daemon forcefully killed.
-```
+A daemon process automatically terminates when the main program exits, even if its work is incomplete.
+
+**Example Implementation:** `run_background_processes.py`
+
 ### 4.1 Non-Daemon Background Processes
-If a process is explicitly set to `daemon=False`, the main process will block and wait for it to exit, ensuring its tasks complete fully.
 
-**Example Implementation:** See [run_background_processes_no_daemons.py](Codes/run_background_processes_no_daemons.py)
+When `daemon=False`, the main program waits for the process to finish before terminating.
 
-## 5. Killing a process
-To explicitly terminate a process, call `process.terminate()`. This sends a SIGTERM signal (on Unix) or TerminateProcess (on Windows) to immediately stop it. The process `is_alive()` method helps check status.
+**Example Implementation:** `run_background_processes_no_daemons.py`
 
-**Example Implementation:** See [killing_processes.py](Codes/killing_processes.py)
+---
 
-```mermaid
-%%{init: {'theme': 'base', 'themeVariables': { 'lineColor': '#475569', 'primaryColor': '#f8fafc', 'primaryTextColor': '#0f172a', 'primaryBorderColor': '#cbd5e1' }}}%%
-flowchart LR
-    %% Premium Kill Process Flow
-    classDef running fill:#dcfce7,stroke:#22c55e,stroke-width:2px,color:#15803d,font-weight:bold
-    classDef dead fill:#ffe4e6,stroke:#e11d48,stroke-width:2px,color:#4c0519,font-weight:bold
+## 5. Killing a Process
 
-    Start["⚙️ Process Init"] --> Run["🟢 Running: is_alive() = True"]
-    Run == "terminate()" ==> Killed["🔴 Terminated: is_alive() = False"]
-    Killed --> Join["🏁 Joined & Cleaned Up"]
+A running process can be stopped using `process.terminate()`.
 
-    class Run running
-    class Killed dead
-```
+The `is_alive()` method can be used to check whether the process is still active.
 
-## 6. Defining processes in a subclass
-Like threads, you can inherit from `multiprocessing.Process` and override its `run()` method. This object-oriented approach is ideal when you need to maintain state inside the process.
+**Example Implementation:** `killing_processes.py`
 
-**Example Implementation:** See [process_in_subclass.py](Codes/process_in_subclass.py)
+---
 
-```mermaid
-%%{init: {'theme': 'base', 'themeVariables': { 'lineColor': '#475569', 'primaryColor': '#f8fafc', 'primaryTextColor': '#0f172a', 'primaryBorderColor': '#cbd5e1' }}}%%
-classDiagram
-    %% Premium Class Diagram
-    class Process {
-        +start()
-        +join()
-        +run()
-    }
-    class MyProcess {
-        +run()
-    }
-    Process <|-- MyProcess : Inherits
-```
+## 6. Defining Processes in a Subclass
 
-## 7. Using a queue to exchange data
-Because memory is isolated, sharing data requires inter-process communication (IPC) tools. `multiprocessing.Queue` operates identically to `queue.Queue` but is built for process-safe communication via locking mechanisms.
+Processes can be created by inheriting from `multiprocessing.Process` and overriding the `run()` method.
 
-**Example Implementation:** See [communicating_with_queue.py](Codes/communicating_with_queue.py)
+**Example Implementation:** `process_in_subclass.py`
 
-```mermaid
-%%{init: {'theme': 'base', 'themeVariables': { 'lineColor': '#475569', 'primaryColor': '#f8fafc', 'primaryTextColor': '#0f172a', 'primaryBorderColor': '#cbd5e1' }}}%%
-flowchart LR
-    %% Premium IPC Queue Visual
-    classDef queue fill:#dcfce7,stroke:#22c55e,stroke-width:2.5px,color:#15803d,font-weight:bold
-    classDef prod fill:#e0f2fe,stroke:#0ea5e9,stroke-width:2px,color:#0369a1,font-weight:bold
-    classDef cons fill:#ffe4e6,stroke:#e11d48,stroke-width:2px,color:#4c0519,font-weight:bold
+---
 
-    P("📤 Producer Process")
-    Q[("🛡️ Multiprocessing Queue")]
-    C("📥 Consumer Process")
-    
-    P == "put(item)" ==> Q
-    Q == "get()" ==> C
+## 7. Using a Queue to Exchange Data
 
-    class Q queue
-    class P prod
-    class C cons
-```
+`multiprocessing.Queue` provides a secure way for processes to exchange information.
 
-## 8. Using pipes to exchange objects
-Pipes are preferred for high-speed, two-way communication between exactly two processes. `multiprocessing.Pipe()` returns a pair of connection objects representing the ends of a pipe.
+**Example Implementation:** `communicating_with_queue.py`
 
-**Example Implementation:** See [communicating_with_pipe.py](Codes/communicating_with_pipe.py)
+---
 
-```mermaid
-%%{init: {'theme': 'base', 'themeVariables': { 'lineColor': '#475569', 'primaryColor': '#f8fafc', 'primaryTextColor': '#0f172a', 'primaryBorderColor': '#cbd5e1' }}}%%
-flowchart LR
-    %% Premium Pipe Connection Visual
-    classDef pipe fill:#f3e8ff,stroke:#7c3aed,stroke-width:2.5px,color:#2e1065,font-weight:bold
-    classDef process fill:#e0f2fe,stroke:#0ea5e9,stroke-width:2px,color:#0369a1,font-weight:bold
+## 8. Using Pipes to Exchange Objects
 
-    P1("⚙️ Process A")
-    Pipe{{"🔌 Duplex Pipe Link"}}
-    P2("⚙️ Process B")
+`multiprocessing.Pipe()` creates two connected endpoints for communication between processes.
 
-    P1 <== "send() / recv()" ==> Pipe
-    Pipe <== "send() / recv()" ==> P2
+**Example Implementation:** `communicating_with_pipe.py`
 
-    class Pipe pipe
-    class P1,P2 process
-```
+---
 
-## 9. Synchronizing processes
-Like threads, processes can use synchronization primitives such as Lock, Event, Condition, and Barrier from the `multiprocessing` module to avoid resource contention.
+## 9. Synchronizing Processes
 
-**Example Implementation:** See [processes_barrier.py](Codes/processes_barrier.py)
+The `multiprocessing` module provides synchronization tools such as:
 
-```mermaid
-%%{init: {'theme': 'base', 'themeVariables': { 'lineColor': '#475569', 'primaryColor': '#f8fafc', 'primaryTextColor': '#0f172a', 'primaryBorderColor': '#cbd5e1' }}}%%
-flowchart TD
-    %% Premium Sync Visual
-    classDef sync fill:#fef3c7,stroke:#f59e0b,stroke-width:2.5px,color:#78350f,font-weight:bold
-    classDef pActive fill:#dcfce7,stroke:#22c55e,stroke-width:2px,color:#15803d,font-weight:bold
+- Lock
+- Event
+- Condition
+- Barrier
 
-    subgraph SYNC_BARRIER ["🚧 Barrier Rendezvous"]
-        B{{"🛑 Barrier Capacity = 2"}}
-    end
+**Example Implementation:** `processes_barrier.py`
 
-    P1("⚙️ Sync Process 1") == "Wait" ==> B
-    P2("⚙️ Sync Process 2") == "Wait" ==> B
-    
-    B == "Release Together" ==> Critical[("⚡ Critical Section")]
+---
 
-    class B sync
-    class P1,P2 pActive
-```
+## 10. Using a Process Pool
 
-## 10. Using a process pool
-The `multiprocessing.Pool` class abstraction offers a convenient way to parallelize a function across multiple input values, distributing the input data across processes efficiently (data parallelism).
-- `pool.map()` behaves like the built-in map, but chops tasks into chunks and farms them out to processes.
+`multiprocessing.Pool` manages multiple worker processes and distributes tasks efficiently.
 
-**Example Implementation:** See [process_pool.py](Codes/process_pool.py)
+### Key Feature
 
-```mermaid
-%%{init: {'theme': 'base', 'themeVariables': { 'lineColor': '#475569', 'primaryColor': '#f8fafc', 'primaryTextColor': '#0f172a', 'primaryBorderColor': '#cbd5e1' }}}%%
-flowchart TD
-    %% Premium Pool Visual
-    classDef poolTask fill:#e0f2fe,stroke:#0ea5e9,stroke-width:2.5px,color:#0369a1,font-weight:bold
-    classDef pNodes fill:#f3e8ff,stroke:#7c3aed,stroke-width:2px,color:#2e1065,font-weight:bold
+- `pool.map()` executes tasks in parallel across multiple processes.
 
-    Data[("💾 Input Data: 0 to 99")]
-    Pool{{"⚙️ Process Pool (4 Workers)"}}
-    
-    Data == "pool.map(func)" ==> Pool
-    
-    subgraph WORKERS ["Worker Nodes"]
-        W1("Worker 1")
-        W2("Worker 2")
-        W3("Worker 3")
-        W4("Worker 4")
-    end
-    
-    Pool --> W1
-    Pool --> W2
-    Pool --> W3
-    Pool --> W4
-    
-    W1 -. "Results" .-> Out[("📦 Output List")]
-    W2 -. "Results" .-> Out
-    W3 -. "Results" .-> Out
-    W4 -. "Results" .-> Out
+**Example Implementation:** `process_pool.py`
 
-    class Pool poolTask
-    class W1,W2,W3,W4 pNodes
-```
+---
+
+## Summary
+
+The `multiprocessing` module enables true parallel execution in Python through separate processes and provides tools for communication, synchronization, and workload distribution.

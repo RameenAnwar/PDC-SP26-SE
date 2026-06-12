@@ -1,226 +1,154 @@
-# Chapter 02: Thread Synchronization Primitives in Python
-
-![Python Version](https://img.shields.io/badge/python-3.7+-blue.svg)
-![Build Status](https://img.shields.io/badge/status-completed-brightgreen.svg)
-![Course](https://img.shields.io/badge/course-PDC-purple.svg)
+# Chapter 02: Thread Synchronization Concepts in Python
 
 ## Overview
 
-Welcome to the **Parallel and Distributed Computing (PDC)** documentation for Chapter 02. This chapter dives strictly into **Threading** and the complex synchronization mechanisms required to manage shared memory safely.
+This chapter explains Thread Synchronization in Parallel and Distributed
+Computing (PDC) using Python. It focuses on managing shared resources
+safely when multiple threads execute at the same time.
 
-This guide is strictly divided into two sections: **Part 1** covers the theoretical computer science concepts behind race conditions and synchronization objects, and **Part 2** showcases practical Python code implementations.
+The documentation is divided into two sections:
 
----
+-   **Part 1: Theory** covers race conditions, shared memory problems,
+    and synchronization techniques.
+-   **Part 2: Practical Implementation** explains Python examples using
+    threads, locks, semaphores, and queues.
 
-## Table of Contents
+------------------------------------------------------------------------
 
-### Part 1: Theoretical Foundations
-1. [The Shared Memory Problem](#1-the-shared-memory-problem)
-2. [Synchronization Primitives](#2-synchronization-primitives)
-    - [Locks (Mutex) & RLocks](#locks-mutex--rlocks)
-    - [Semaphores](#semaphores)
-    - [Events & Conditions](#events--conditions)
-3. [The Producer-Consumer Pattern](#3-the-producer-consumer-pattern)
+# PART 1: THEORETICAL CONCEPTS
 
-### Part 2: Practical Implementation
-4. [Implementation Breakdown & Outputs](#4-implementation-breakdown--outputs)
-    - [Basic Thread Definition](#basic-thread-definition)
-    - [Implementing Locks](#implementing-locks)
-    - [Implementing Semaphores](#implementing-semaphores)
-    - [Thread-Safe Queues](#thread-safe-queues)
-5. [Execution Guide](#5-execution-guide)
+## 1. Shared Memory Problem
 
----
+Threads inside the same process share memory, variables, and resources.
+This improves communication speed but can create problems when multiple
+threads access the same data simultaneously.
 
-# PART 1: THEORETICAL FOUNDATIONS
+## Race Condition
 
-## 1. The Shared Memory Problem
+A race condition happens when multiple threads modify shared data at the
+same time. Because thread execution order is unpredictable, the final
+result may become incorrect.
 
-In a multithreaded environment, all threads exist within the exact same OS process. This means they physically share access to the same heap memory, variables, and data structures.
+## Critical Section
 
-- **Race Conditions:** When two or more threads attempt to read, modify, and write to a shared variable at the exact same physical microsecond, the final state of the variable becomes unpredictable. This non-deterministic behavior is the most critical vulnerability in Parallel Computing.
-- **Critical Sections:** A piece of architecture/code that accesses a shared resource. To prevent race conditions, a Critical Section must execute as an "atomic" operation—meaning only one thread can be inside the critical section at any given time.
+A critical section is a part of code that works with shared resources.
+Synchronization ensures that only one thread can execute this section at
+a time.
 
-## 2. Synchronization Primitives
+------------------------------------------------------------------------
 
-To enforce atomic operations across Critical Sections, the OS and Python's `threading` library provide several architectural tools known as primitives.
+# 2. Synchronization Techniques
 
-### Locks (Mutex) & RLocks
-- **Lock (Mutual Exclusion Object):** The simplest primitive. A thread "acquires" the lock before entering a critical section. If another thread tries to acquire it concurrently, it halts and waits until the first thread "releases" it. 
-- **RLock (Re-entrant Lock):** A special Lock that can be acquired multiple times by the *same* thread without causing a deadlock (ideal for recursive functions).
+## Locks and RLocks
 
-### Semaphores
-A Semaphore is an advanced lock that maintains an internal counter rather than a strict binary True/False state. 
-- **Use Case:** Instead of allowing exactly *one* thread into a critical section, a Semaphore initialized to $N$ allows exactly $N$ threads to access a resource pool simultaneously (e.g., limiting database connection pools).
+A Lock allows only one thread to access a critical section at a time.
 
-### Events & Conditions
-- **Event:** A simple communication mechanism where one thread signals an event, and other threads wait for that signal before continuing execution.
-- **Condition:** A more complex primitive that couples a Lock with an Event. It allows threads to wait for a specific state change in shared data before proceeding.
+Process:
 
-## 3. The Producer-Consumer Pattern
+1.  A thread acquires the lock.
+2.  It performs the required operation.
+3.  It releases the lock.
+4.  Another thread can continue.
 
-A classic computer science paradigm in PDC. 
-- **Producers** generate data (e.g., retrieving web requests) and place it into a buffer.
-- **Consumers** take data out of the buffer and process it.
+RLock allows the same thread to acquire the same lock multiple times
+without creating a deadlock.
 
-To prevent the Producer from overflowing the buffer or the Consumer from reading empty memory, they must be rigorously synchronized. Python solves this robustly via the built-in `queue.Queue` object, which inherently utilizes Locks and Conditions under the hood to ensure thread-safe operations.
+------------------------------------------------------------------------
 
----
----
+## Semaphores
+
+A Semaphore controls access to resources using a counter.
+
+Unlike a normal Lock, a Semaphore can allow multiple threads to access a
+resource depending on its limit.
+
+Example: A Semaphore with a value of 5 allows five threads to use a
+resource at the same time.
+
+------------------------------------------------------------------------
+
+## Events and Conditions
+
+An Event allows threads to communicate through signals.
+
+A thread can wait until another thread completes a task and sends a
+signal.
+
+A Condition combines locking and waiting mechanisms to handle situations
+where threads need to wait for specific changes.
+
+------------------------------------------------------------------------
+
+# 3. Producer-Consumer Pattern
+
+The Producer-Consumer pattern is used when one thread creates data and
+another thread processes it.
+
+Producer: - Creates data - Adds data to a shared buffer
+
+Consumer: - Takes data from the buffer - Processes the data
+
+Synchronization prevents problems such as reading empty buffers or
+adding data when storage is full.
+
+Python Queue provides built-in thread safety for this pattern.
+
+------------------------------------------------------------------------
 
 # PART 2: PRACTICAL IMPLEMENTATION
 
-## 4. Implementation Breakdown & Outputs
+## 4. Implementation Examples
 
-The `Chapter02` directory contains empirical scripts proving these concepts. Below are the core highlights.
+## Basic Thread Creation
 
-### Basic Thread Definition
-**File:** `Thread_definition.py`
+File: `Thread_definition.py`
 
-**💻 Code Snippet:**
-```python
-import threading
+This example demonstrates:
 
-def my_func(thread_number):
-    print('my_func called by thread N°{}'.format(thread_number))
+-   Creating threads
+-   Passing parameters
+-   Starting execution
+-   Managing multiple threads
 
-def main():
-    threads = []
-    # Spawning 10 threads pointing to the same function
-    for i in range(10):
-        t = threading.Thread(target=my_func, args=(i,))
-        threads.append(t)
-        t.start()
-        t.join()
-```
-**📊 Expected Output:**
-```text
-my_func called by thread N°0
-my_func called by thread N°1
-...
-my_func called by thread N°9
-```
-*(Demonstrates basic thread spawning, scheduling, and argument passing.)*
+------------------------------------------------------------------------
 
----
+## Lock Implementation
 
-### Implementing Locks
-**File:** `MyThreadClass_lock.py`
+File: `MyThreadClass_lock.py`
 
-**💻 Code Snippet:**
-```python
-import threading
-import time
+This example shows how locks protect shared resources and prevent
+multiple threads from modifying data at the same time.
 
-threadLock = threading.Lock()
+------------------------------------------------------------------------
 
-class MyThreadClass(threading.Thread):
-   def __init__(self, name, duration):
-      threading.Thread.__init__(self)
-      self.name = name
-      self.duration = duration
-      
-   def run(self):
-      # Critical Section Start
-      threadLock.acquire()      
-      print ("---> " + self.name + " running")
-      time.sleep(self.duration) 
-      print ("---> " + self.name + " over\n")
-      # Critical Section End
-      threadLock.release()
-```
-**📊 Expected Output:**
-```text
----> Thread#1 running
----> Thread#1 over
+## Semaphore Implementation
 
----> Thread#2 running
----> Thread#2 over
-```
-*(Notice how Thread 2 categorically cannot start "running" until Thread 1 prints "over" and releases the lock, effectively serializing the Critical Section to prevent race conditions).*
+File: `Semaphore.py`
 
----
+This example demonstrates communication between threads where one thread
+waits until another thread completes an action and sends a signal.
 
-### Implementing Semaphores
-**File:** `Semaphore.py`
+------------------------------------------------------------------------
 
-**💻 Code Snippet:**
-```python
-import threading
-import time
+## Thread-Safe Queue
 
-semaphore = threading.Semaphore(0)
-item = 0
+File: `Threading_with_queue.py`
 
-def consumer():
-    print('Consumer is waiting')
-    semaphore.acquire()  # Will block here until semaphore is released by producer
-    print(f'Consumer notify: item number {item}')
+This example implements the Producer-Consumer model using Python Queue.
 
-def producer():
-    global item
-    time.sleep(1)
-    item = 100
-    print(f'Producer notify: item number {item}')
-    semaphore.release()  # Increments semaphore counter, unblocking consumer
-```
-**📊 Expected Output:**
-```text
-Consumer is waiting
-Producer notify: item number 100
-Consumer notify: item number 100
-```
-*(Demonstrates signal synchronicity between threads; the consumer reliably halts until the producer finishes generating the data and increments the semaphore).*
+Benefits:
 
----
+-   Safe communication between threads
+-   Reduced chance of race conditions
+-   Easier thread management
 
-### Thread-Safe Queues
-**File:** `Threading_with_queue.py`
+------------------------------------------------------------------------
 
-**💻 Code Snippet:**
-```python
-from threading import Thread
-from queue import Queue
-import time
+# 5. Execution Guide
 
-class Producer(Thread):
-    def __init__(self, queue):
-        Thread.__init__(self)
-        self.queue = queue
-        
-    def run(self):
-        for i in range(5):
-            self.queue.put(i)
-            print(f'Producer appended {i} to queue')
-            time.sleep(1)
+Run the following commands inside the Chapter02 directory:
 
-class Consumer(Thread):
-    def __init__(self, queue):
-        Thread.__init__(self)
-        self.queue = queue
-        
-    def run(self):
-        while True:
-            item = self.queue.get()
-            print(f'Consumer popped {item}')
-            self.queue.task_done()
-```
-**📊 Expected Output:**
-```text
-Producer appended 0 to queue
-Consumer popped 0
-Producer appended 1 to queue
-Consumer popped 1
-...
-```
-*(Demonstrates the ideal and robust Producer/Consumer architecture. By utilizing Python's thread-safe Queue, we avoid manually calling Lock.acquire() and prevent race conditions inherently).*
-
----
-
-## 5. Execution Guide
-To conduct these benchmarks locally, execute the corresponding scripts sequentially via your OS terminal. Ensure you are navigated inside the `Chapter02` directory:
-
-```bash
+``` bash
 python Thread_definition.py
 python MyThreadClass_lock.py
 python Semaphore.py

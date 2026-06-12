@@ -66,12 +66,12 @@ flowchart TD
     classDef node fill:#e0f2fe,stroke:#0ea5e9,stroke-width:2px,color:#0369a1,font-weight:bold
     classDef db fill:#dcfce7,stroke:#22c55e,stroke-width:2px,color:#15803d,font-weight:bold
 
-    User(["📥 User Client Application"]) <-->|"HTTP / TCP"| LoadBalancer{"⚖️ Load Balancer"}
+    User([" User Client Application"]) <-->|"HTTP / TCP"| LoadBalancer{"⚖️ Load Balancer"}
     LoadBalancer <-->|"Route Request"| Server1["💻 Server Node A"]
     LoadBalancer <-->|"Route Request"| Server2["💻 Server Node B"]
     LoadBalancer <-->|"Route Request"| Server3["💻 Server Node C"]
     
-    Server1 <-->|"Fetch / Write"| DB[("💾 Shared Central Database")]
+    Server1 <-->|"Fetch / Write"| DB[(" Shared Central Database")]
     Server2 <-->|"Fetch / Write"| DB
     Server3 <-->|"Fetch / Write"| DB
 
@@ -210,9 +210,9 @@ flowchart LR
     classDef worker fill:#f3e8ff,stroke:#7c3aed,stroke-width:2px,color:#2e1065,font-weight:bold
     classDef backend fill:#dcfce7,stroke:#22c55e,stroke-width:2px,color:#15803d,font-weight:bold
 
-    Client["💻 Client App <br> addTask_main.py"] -->|"1. Delay/Apply Async"| Broker{"✉️ Message Broker <br> RabbitMQ / Redis"}
-    Broker -->|"2. Pull Tasks"| Worker["⚙️ Celery Worker <br> addTask.py"]
-    Worker -->|"3. Store Results"| Backend[("💾 Result Backend <br> Database / Redis")]
+    Client["💻 Client App <br> addTask_main.py"] -->|"1. Delay/Apply Async"| Broker{" Message Broker <br> RabbitMQ / Redis"}
+    Broker -->|"2. Pull Tasks"| Worker[" Celery Worker <br> addTask.py"]
+    Worker -->|"3. Store Results"| Backend[(" Result Backend <br> Database / Redis")]
 
     class Client client
     class Broker broker

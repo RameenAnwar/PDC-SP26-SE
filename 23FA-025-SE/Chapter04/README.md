@@ -32,11 +32,11 @@ flowchart TD
     classDef rank fill:#dcfce7,stroke:#22c55e,stroke-width:2px,color:#15803d,font-weight:bold
     classDef pool fill:#fef3c7,stroke:#f59e0b,stroke-width:2px,color:#78350f,font-weight:bold
     
-    subgraph MPI_ENV ["🖥️ MPI Execution Environment"]
+    subgraph MPI_ENV [" MPI Execution Environment"]
         direction TB
-        CW{{"🌐 MPI.COMM_WORLD"}}
+        CW{{" MPI.COMM_WORLD"}}
         
-        subgraph PROCESS_POOL ["⚙️ Process Pool"]
+        subgraph PROCESS_POOL [" Process Pool"]
             direction LR
             P0(["Rank 0"])
             P1(["Rank 1"])
