@@ -9,7 +9,7 @@ This portfolio documents the theoretical foundations and practical implementatio
 
 ---
 
-## 🗂 Index
+##  Index
 
 | # | Topic | Core Concept |
 |---|-------|-------------|
