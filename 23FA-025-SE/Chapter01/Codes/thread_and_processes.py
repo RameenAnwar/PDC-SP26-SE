@@ -1,0 +1,65 @@
+import os
+import time
+import threading
+import multiprocessing
+import random
+
+NUM_WORKERS = 10
+size = 1000000
+out_list = list()
+
+def do_something(count, out_list):
+    for i in range(count):
+        out_list.append(random.random())
+
+
+# ---------------- Serial Execution ----------------
+start_time = time.time()
+
+for _ in range(NUM_WORKERS):
+    do_something(size, out_list)
+
+end_time = time.time()
+print("Serial time =", end_time - start_time)
+
+
+# ---------------- Multithreading ----------------
+out_list = []
+start_time = time.time()
+
+jobs = []
+
+for i in range(NUM_WORKERS):
+    thread = threading.Thread(target=do_something, args=(size, out_list))
+    jobs.append(thread)
+
+for j in jobs:
+    j.start()
+
+for j in jobs:
+    j.join()
+
+print("List processing complete.")
+end_time = time.time()
+print("Threading time =", end_time - start_time)
+
+
+# ---------------- Multiprocessing ----------------
+out_list = []
+start_time = time.time()
+
+jobs = []
+
+for i in range(NUM_WORKERS):
+    process = multiprocessing.Process(target=do_something, args=(size, out_list))
+    jobs.append(process)
+
+for j in jobs:
+    j.start()
+
+for j in jobs:
+    j.join()
+
+print("List processing complete.")
+end_time = time.time()
+print("Processes time =", end_time - start_time)
