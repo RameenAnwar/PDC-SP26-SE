@@ -1,4 +1,4 @@
-#  PDC Learning Portfolio — Muhammad Affan
+#  PDC Learning Portfolio — Muhammad Bilal Imtiaz
 ### Parallel & Distributed Computing · SP26-SE · Supervised by Miss Rameen Anwar
 
 ---
