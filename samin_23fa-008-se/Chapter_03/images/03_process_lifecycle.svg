@@ -1,0 +1,80 @@
+<svg viewBox="0 0 860 260" xmlns="http://www.w3.org/2000/svg" font-family="'Courier New', monospace">
+  <defs>
+    <linearGradient id="bg3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#06080f"/>
+      <stop offset="100%" style="stop-color:#0c1120"/>
+    </linearGradient>
+    <marker id="arr3" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#334155"/>
+    </marker>
+    <marker id="arr3g" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#34d399"/>
+    </marker>
+    <marker id="arr3r" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#f43f5e"/>
+    </marker>
+    <marker id="arr3b" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#38bdf8"/>
+    </marker>
+  </defs>
+  <rect width="860" height="260" fill="url(#bg3)" rx="12"/>
+  <rect width="860" height="260" fill="none" stroke="#1a2540" stroke-width="1" rx="12"/>
+
+  <text x="40" y="38" fill="#f97316" font-size="9" letter-spacing="4" font-weight="700">PROCESS LIFECYCLE — FULL PICTURE</text>
+  <line x1="40" y1="48" x2="820" y2="48" stroke="#1a2540" stroke-width="1"/>
+
+  <!-- State circles -->
+  <!-- Created -->
+  <circle cx="120" cy="148" r="52" fill="rgba(100,116,139,0.12)" stroke="#334155" stroke-width="2"/>
+  <text x="120" y="144" fill="#64748b" font-size="11" font-weight="700" text-anchor="middle">CREATED</text>
+  <text x="120" y="160" fill="#334155" font-size="9" text-anchor="middle">Process()</text>
+  <text x="120" y="214" fill="#64748b" font-size="9" text-anchor="middle">is_alive() = False</text>
+
+  <!-- Arrow Created → Ready -->
+  <line x1="174" y1="148" x2="240" y2="148" stroke="#34d399" stroke-width="1.5" marker-end="url(#arr3g)"/>
+  <text x="207" y="140" fill="#34d399" font-size="8" text-anchor="middle">p.start()</text>
+
+  <!-- Ready -->
+  <circle cx="292" cy="148" r="52" fill="rgba(52,211,153,0.06)" stroke="#34d399" stroke-width="2"/>
+  <text x="292" y="144" fill="#34d399" font-size="11" font-weight="700" text-anchor="middle">READY</text>
+  <text x="292" y="160" fill="#334155" font-size="9" text-anchor="middle">queued</text>
+  <text x="292" y="214" fill="#64748b" font-size="9" text-anchor="middle">OS scheduler</text>
+
+  <!-- Arrow Ready → Running -->
+  <line x1="346" y1="148" x2="412" y2="148" stroke="#34d399" stroke-width="1.5" marker-end="url(#arr3g)"/>
+  <text x="379" y="140" fill="#34d399" font-size="8" text-anchor="middle">scheduled</text>
+
+  <!-- Running -->
+  <circle cx="464" cy="148" r="52" fill="rgba(52,211,153,0.10)" stroke="#34d399" stroke-width="2.5"/>
+  <text x="464" y="144" fill="#34d399" font-size="11" font-weight="700" text-anchor="middle">RUNNING</text>
+  <text x="464" y="160" fill="#34d399" font-size="9" text-anchor="middle">executing</text>
+  <text x="464" y="214" fill="#34d399" font-size="9" text-anchor="middle">is_alive() = True</text>
+
+  <!-- Running → Waiting (curved top) -->
+  <path d="M 430 100 Q 378 68 326 100" fill="none" stroke="#38bdf8" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr3b)"/>
+  <text x="378" y="76" fill="#38bdf8" font-size="8" text-anchor="middle">I/O or sleep()</text>
+
+  <!-- Waiting → Ready (curved bottom) -->
+  <path d="M 326 196 Q 378 228 430 196" fill="none" stroke="#38bdf8" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr3b)"/>
+  <text x="378" y="244" fill="#38bdf8" font-size="8" text-anchor="middle">I/O done</text>
+
+  <!-- Arrow Running → Terminated -->
+  <line x1="518" y1="148" x2="584" y2="148" stroke="#f43f5e" stroke-width="1.5" marker-end="url(#arr3r)"/>
+  <text x="551" y="140" fill="#f43f5e" font-size="8" text-anchor="middle">terminate()</text>
+
+  <!-- Terminated -->
+  <circle cx="636" cy="148" r="52" fill="rgba(244,63,94,0.10)" stroke="#f43f5e" stroke-width="2"/>
+  <text x="636" y="140" fill="#f43f5e" font-size="10" font-weight="700" text-anchor="middle">TERMINATED</text>
+  <text x="636" y="156" fill="#f43f5e" font-size="9" text-anchor="middle">p.terminate()</text>
+  <text x="636" y="214" fill="#f43f5e" font-size="9" text-anchor="middle">exitcode = -15</text>
+
+  <!-- Arrow Terminated → Joined -->
+  <line x1="690" y1="148" x2="756" y2="148" stroke="#38bdf8" stroke-width="1.5" marker-end="url(#arr3b)"/>
+  <text x="723" y="140" fill="#38bdf8" font-size="8" text-anchor="middle">p.join()</text>
+
+  <!-- Joined -->
+  <circle cx="808" cy="148" r="46" fill="rgba(56,189,248,0.10)" stroke="#38bdf8" stroke-width="2"/>
+  <text x="808" y="144" fill="#38bdf8" font-size="11" font-weight="700" text-anchor="middle">JOINED</text>
+  <text x="808" y="160" fill="#38bdf8" font-size="9" text-anchor="middle">cleaned up</text>
+  <text x="808" y="214" fill="#38bdf8" font-size="9" text-anchor="middle">0 = normal</text>
+</svg>

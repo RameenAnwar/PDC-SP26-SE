@@ -1,0 +1,49 @@
+<svg viewBox="0 0 860 280" xmlns="http://www.w3.org/2000/svg" font-family="'Courier New', monospace">
+  <defs>
+    <linearGradient id="bg5" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#06080f"/>
+      <stop offset="100%" style="stop-color:#0c1120"/>
+    </linearGradient>
+    <marker id="arr5" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#334155"/>
+    </marker>
+    <marker id="arr5r" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#f43f5e"/>
+    </marker>
+    <marker id="arr5g" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#34d399"/>
+    </marker>
+  </defs>
+  <rect width="860" height="280" fill="url(#bg5)" rx="12"/>
+  <rect width="860" height="280" fill="none" stroke="#1a2540" stroke-width="1" rx="12"/>
+
+  <text x="40" y="38" fill="#f97316" font-size="9" letter-spacing="4" font-weight="700">DAEMON vs NON-DAEMON PROCESSES</text>
+  <line x1="40" y1="48" x2="820" y2="48" stroke="#1a2540" stroke-width="1"/>
+
+  <!-- Main Process -->
+  <rect x="340" y="68" width="180" height="50" fill="rgba(249,115,22,0.08)" stroke="#f97316" stroke-width="1.5" rx="8"/>
+  <text x="430" y="89" fill="#f97316" font-size="11" font-weight="700" text-anchor="middle">Main Process</text>
+  <text x="430" y="107" fill="#64748b" font-size="9" text-anchor="middle">spawns both · then exits</text>
+
+  <!-- Arrows down -->
+  <line x1="380" y1="120" x2="230" y2="158" stroke="#334155" stroke-width="1.5" marker-end="url(#arr5)"/>
+  <line x1="480" y1="120" x2="630" y2="158" stroke="#334155" stroke-width="1.5" marker-end="url(#arr5)"/>
+
+  <!-- Daemon process (left - red) -->
+  <rect x="60" y="160" width="300" height="90" fill="rgba(244,63,94,0.06)" stroke="#f43f5e" stroke-width="1.5" rx="8"/>
+  <text x="210" y="183" fill="#f43f5e" font-size="11" font-weight="700" text-anchor="middle">background_process</text>
+  <text x="210" y="200" fill="#64748b" font-size="9" text-anchor="middle">daemon = True · prints 0 to 4</text>
+  <rect x="80" y="210" width="260" height="26" fill="rgba(244,63,94,0.10)" rx="4"/>
+  <text x="210" y="227" fill="#f43f5e" font-size="9" text-anchor="middle">💀  KILLED when parent exits — may not finish</text>
+
+  <text x="80" y="260" fill="#64748b" font-size="9">Killed on parent exit: Yes  ·  Can spawn children: No</text>
+
+  <!-- Non-Daemon process (right - green) -->
+  <rect x="500" y="160" width="300" height="90" fill="rgba(52,211,153,0.06)" stroke="#34d399" stroke-width="1.5" rx="8"/>
+  <text x="650" y="183" fill="#34d399" font-size="11" font-weight="700" text-anchor="middle">NO_background_process</text>
+  <text x="650" y="200" fill="#64748b" font-size="9" text-anchor="middle">daemon = False · prints 5 to 9</text>
+  <rect x="520" y="210" width="260" height="26" fill="rgba(52,211,153,0.10)" rx="4"/>
+  <text x="650" y="227" fill="#34d399" font-size="9" text-anchor="middle">✅  Runs to full completion always</text>
+
+  <text x="520" y="260" fill="#64748b" font-size="9">Killed on parent exit: No  ·  Can spawn children: Yes</text>
+</svg>
