@@ -27,6 +27,31 @@ A thread is the smallest unit of execution that can be scheduled by an operating
 - **Concurrency vs Parallelism:** Concurrency means dealing with multiple things at once (switching between tasks), while parallelism means doing multiple things at once (simultaneous execution).
 - **The Global Interpreter Lock (GIL):** In CPython (the standard Python implementation), the GIL is a mutex that protects access to Python objects. It prevents multiple native threads from executing Python bytecodes at once. This means that for CPU-bound tasks, threads may not offer true parallelism. However, for I/O-bound tasks (like network requests or file operations), threads are highly effective because the GIL is released during I/O operations.
 
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': { 'lineColor': '#455A64', 'primaryColor': '#F5F5F5' }}}%%
+flowchart TD
+    %% Pro Max Process vs Thread Visual
+    classDef process fill:#E3F2FD,stroke:#1565C0,stroke-width:2px,color:#0D47A1,font-weight:bold
+    classDef thread fill:#E8F5E9,stroke:#2E7D32,stroke-width:2px,color:#1B5E20,font-weight:bold
+    classDef mem fill:#FFF8E1,stroke:#FF8F00,stroke-width:2px,color:#E65100,font-weight:bold
+    
+    subgraph PROCESS [PROCESS EXECUTION ENVIRONMENT]
+        direction TB
+        RAM[(SHARED HEAP MEMORY)]
+        
+        subgraph THREAD_POOL [THREAD POOL]
+            direction LR
+            T1(Thread 1 Stack)
+            T2(Thread 2 Stack)
+            T3(Thread N Stack)
+        end
+        RAM === THREAD_POOL
+    end
+    class PROCESS process
+    class THREAD_POOL,T1,T2,T3 thread
+    class RAM mem
+```
+
 ## 2. Python Threading Module
 The threading module is the standard library interface for thread-based parallelism in Python.
 - It provides high-level abstractions over the lower-level thread module.
@@ -60,6 +85,11 @@ def main():
 if __name__ == "__main__":
     main()
 ```
+
+**Output:**
+<p align="center">
+  <img src="Output/Thread%20Definition.png" alt="Thread Definition Output" width="80%">
+</p>
 
 ## 4. Determining the Current Thread
 In a multi-threaded environment, it is often necessary to identify which thread is executing a specific piece of code.
@@ -103,7 +133,30 @@ if __name__ == "__main__":
     t2.join()
     t3.join()
 ```
-*(Note: `current_thread()` is preferred over the older `currentThread()`)*
+
+**Output:**
+<p align="center">
+  <img src="Output/Thread%20Determine.png" alt="Thread Determine Output" width="80%">
+</p>
+
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': { 'lineColor': '#37474F', 'primaryColor': '#ECEFF1' }}}%%
+flowchart LR
+    %% Pro Max Thread Spawning Model
+    classDef tMain fill:#FCE4EC,stroke:#C2185B,stroke-width:3px,color:#880E4F,font-weight:bold
+    classDef tChild fill:#E1F5FE,stroke:#0288D1,stroke-width:2px,color:#01579B,font-weight:bold
+
+    Main(MAIN THREAD)
+    Main == "t1.start()" ==> F_A(Function A)
+    Main == "t2.start()" ==> F_B(Function B)
+    Main == "t3.start()" ==> F_C(Function C)
+
+    class Main tMain
+    class F_A,F_B,F_C tChild
+```
+
+> [!NOTE]  
+> *`current_thread()` is preferred over the older `currentThread()`)*
 
 ## 5. Defining a Thread Subclass
 This refers to the Object-Oriented approach of creating a thread.
@@ -150,6 +203,11 @@ if __name__ == "__main__":
     main()
 ```
 
+**Output:**
+<p align="center">
+  <img src="Output/MyThreadClass.png" alt="MyThreadClass Output" width="80%">
+</p>
+
 ## 6. Thread Synchronization with a Lock
 When multiple threads access shared data simultaneously, race conditions can occur. A race condition happens when the behavior of software depends on the timing of uncontrollable events (like thread scheduling).
 - **Mutual Exclusion:** A Lock (mutex) ensures that only one thread can execute a specific block of code (critical section) at a time.
@@ -187,6 +245,35 @@ class MyThreadClass (Thread):
       threadLock.release()
       
 # ... main execution as before ...
+```
+
+**Output:**
+<p align="center">
+  <img src="Output/MyThreadClass_lock.png" alt="MyThreadClass Lock Output" width="80%">
+</p>
+
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': { 'lineColor': '#455A64', 'primaryColor': '#F5F5F5' }}}%%
+flowchart TD
+    %% Pro Max Mutex Visualization
+    classDef tActive fill:#E8F5E9,stroke:#2E7D32,stroke-width:2px,color:#1B5E20,font-weight:bold
+    classDef tWait fill:#FFEBEE,stroke:#D32F2F,stroke-width:2px,color:#B71C1C,font-weight:bold
+    classDef lock fill:#FFF3E0,stroke:#E65100,stroke-width:3px,color:#E65100,font-weight:bold
+
+    subgraph MUTEX_LOCK [MUTEX LOCK SYNCHRONIZATION]
+        direction TB
+        Bouncer{{MUTEX OBJECT}}
+        CS[(CRITICAL SECTION)]
+        Bouncer === CS
+    end
+
+    T1(Active Thread) == "Acquires Lock" ==> Bouncer
+    T2(Blocked Thread) -. "Waits for Lock" .-> Bouncer
+    T3(Blocked Thread) -. "Waits for Lock" .-> Bouncer
+
+    class T1 tActive
+    class T2,T3 tWait
+    class Bouncer lock
 ```
 
 ## 7. Thread Synchronization with RLock
@@ -245,6 +332,34 @@ if __name__ == "__main__":
     main()
 ```
 
+**Output:**
+<p align="center">
+  <img src="Output/Rlock.png" alt="RLock Output" width="80%">
+</p>
+
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': { 'lineColor': '#455A64', 'primaryColor': '#F5F5F5' }}}%%
+flowchart LR
+    %% Pro Max RLock Reentrancy Flow
+    classDef rlock fill:#F3E5F5,stroke:#7B1FA2,stroke-width:3px,color:#4A148C,font-weight:bold
+    classDef func fill:#E3F2FD,stroke:#1565C0,stroke-width:2px,color:#0D47A1,font-weight:bold
+
+    T(Executing Thread)
+    R{{REENTRANT LOCK}}
+    F1(Function Context A)
+    F2(Function Context B)
+
+    T == "Acquire (Count=1)" ==> R
+    R == "Execution Path" ==> F1
+    F1 == "Acquire (Count=2)" ==> R
+    R == "Execution Path" ==> F2
+    F2 -. "Release (Count=1)" .-> R
+    F1 -. "Release (Count=0)" .-> R
+
+    class R rlock
+    class F1,F2 func
+```
+
 ## 8. Thread Synchronization with Semaphores
 A Semaphore is a more generalized lock that manages a counter instead of a binary flag.
 - **Counting Mechanism:** A semaphore maintains an internal counter. The counter is decremented by each `acquire()` call and incremented by each `release()` call.
@@ -286,6 +401,36 @@ def main():
 
 if __name__ == "__main__":
     main()
+```
+
+**Output:**
+<p align="center">
+  <img src="Output/Semaphore.png" alt="Semaphore Output" width="80%">
+</p>
+
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': { 'lineColor': '#455A64', 'primaryColor': '#F5F5F5' }}}%%
+flowchart TD
+    %% Pro Max Semaphore Visual
+    classDef sem fill:#E0F7FA,stroke:#00838F,stroke-width:3px,color:#006064,font-weight:bold
+    classDef pass fill:#E8F5E9,stroke:#2E7D32,stroke-width:2px,color:#1B5E20,font-weight:bold
+    classDef block fill:#FFEBEE,stroke:#D32F2F,stroke-width:2px,color:#B71C1C,font-weight:bold
+
+    subgraph SEMAPHORE_BUCKET [SEMAPHORE TOKEN BUCKET]
+        direction TB
+        Bucket{{TOKENS = 2}}
+        Resource[(RESOURCE POOL)]
+        Bucket === Resource
+    end
+
+    T1(Thread A) == "Acquire (Tokens=1)" ==> Bucket
+    T2(Thread B) == "Acquire (Tokens=0)" ==> Bucket
+    T3(Thread C) -. "Blocked Wait" .-> Bucket
+    T4(Thread D) -. "Blocked Wait" .-> Bucket
+
+    class Bucket sem
+    class T1,T2 pass
+    class T3,T4 block
 ```
 
 ## 9. Thread Synchronization with a Condition
@@ -343,6 +488,35 @@ if __name__ == "__main__":
     main()
 ```
 
+**Output:**
+<p align="center">
+  <img src="Output/Condition.png" alt="Condition Output" width="80%">
+</p>
+
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': { 'lineColor': '#455A64', 'primaryColor': '#F5F5F5' }}}%%
+flowchart LR
+    %% Pro Max Condition Signal Flow
+    classDef cWait fill:#FFEBEE,stroke:#D32F2F,stroke-width:2px,color:#B71C1C,font-weight:bold
+    classDef cSignal fill:#E8F5E9,stroke:#2E7D32,stroke-width:2px,color:#1B5E20,font-weight:bold
+    classDef cond fill:#FFF3E0,stroke:#E65100,stroke-width:3px,color:#E65100,font-weight:bold
+
+    T_Cons(Consumer Thread)
+    Cond[/CONDITION VARIABLE/]
+    T_Prod(Producer Thread)
+
+    T_Cons == "Wait Signal" ==> Cond
+    Cond -. "Blocks Execution" .-> T_Cons
+    
+    T_Prod == "Produce Data" ==> Cond
+    T_Prod == "Notify Signal" ==> Cond
+    Cond == "Wakes Thread" ==> T_Cons
+
+    class T_Cons cWait
+    class T_Prod cSignal
+    class Cond cond
+```
+
 ## 10. Thread Synchronization with an Event
 An Event is a simple synchronization object that represents an internal flag.
 - **Mechanism:**
@@ -386,6 +560,33 @@ if __name__ == "__main__":
     t2.join()
 ```
 
+**Output:**
+<p align="center">
+  <img src="Output/Event.png" alt="Event Output" width="80%">
+</p>
+
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': { 'lineColor': '#455A64', 'primaryColor': '#F5F5F5' }}}%%
+flowchart TD
+    %% Pro Max Event Flag Visual
+    classDef eFlag fill:#F3E5F5,stroke:#7B1FA2,stroke-width:3px,color:#4A148C,font-weight:bold
+    classDef tAction fill:#E3F2FD,stroke:#1565C0,stroke-width:2px,color:#0D47A1,font-weight:bold
+
+    subgraph EVENT_SYSTEM [EVENT FLAG SYSTEM]
+        direction LR
+        Flag{INTERNAL FLAG}
+    end
+
+    T_Work(Worker Thread) == "Wait for Flag" ==> Flag
+    T_Ctrl(Control Thread) == "Set / Clear Flag" ==> Flag
+    
+    Flag -. "If True: Release" .-> T_Work
+    Flag -. "If False: Block" .-> T_Work
+
+    class Flag eFlag
+    class T_Work,T_Ctrl tAction
+```
+
 ## 11. Thread Synchronization with a Barrier
 A Barrier provides a synchronization point for a fixed number of threads.
 - **Rendezvous Point:** All participating threads must call `wait()` on the barrier.
@@ -420,6 +621,34 @@ def main():
 
 if __name__ == "__main__":
     main()
+```
+
+**Output:**
+<p align="center">
+  <img src="Output/Barrier.png" alt="Barrier Output" width="80%">
+</p>
+
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': { 'lineColor': '#455A64', 'primaryColor': '#F5F5F5' }}}%%
+flowchart TD
+    %% Pro Max Barrier Rendezvous Visual
+    classDef bar fill:#FFF3E0,stroke:#E65100,stroke-width:3px,color:#E65100,font-weight:bold
+    classDef thr fill:#E1F5FE,stroke:#0288D1,stroke-width:2px,color:#01579B,font-weight:bold
+    classDef pass fill:#E8F5E9,stroke:#2E7D32,stroke-width:2px,color:#1B5E20,font-weight:bold
+
+    subgraph RACE_TRACK [BARRIER RENDEZVOUS STATE]
+        B{{BARRIER CAPACITY = 3}}
+    end
+
+    T1(Thread A) == "Call wait()" ==> B
+    T2(Thread B) == "Call wait()" ==> B
+    T3(Thread C) == "Call wait()" ==> B
+
+    B == "Synchronized Release" ==> Phase2[(PHASE 2 EXECUTION)]
+
+    class B bar
+    class T1,T2,T3 thr
+    class Phase2 pass
 ```
 
 ## 12. Thread Communication Using a Queue
@@ -476,4 +705,38 @@ if __name__ == '__main__':
     t2.join()
     t3.join()
     t4.join()
+```
+
+**Output:**
+<p align="center">
+  <img src="Output/Threading_with_queue.png" alt="Queue Output" width="80%">
+</p>
+
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': { 'lineColor': '#455A64', 'primaryColor': '#F5F5F5' }}}%%
+flowchart LR
+    %% Pro Max Queue Pipe Visual
+    classDef queue fill:#E8F5E9,stroke:#2E7D32,stroke-width:3px,color:#1B5E20,font-weight:bold
+    classDef prod fill:#E3F2FD,stroke:#1565C0,stroke-width:2px,color:#0D47A1,font-weight:bold
+    classDef cons fill:#FCE4EC,stroke:#C2185B,stroke-width:2px,color:#880E4F,font-weight:bold
+
+    P1(Producer Entity 1)
+    P2(Producer Entity 2)
+    
+    subgraph QUEUE_PIPE [THREAD-SAFE QUEUE SYSTEM]
+        direction LR
+        Q[(FIFO BUFFER PIPELINE)]
+    end
+
+    C1(Consumer Entity 1)
+    C2(Consumer Entity 2)
+
+    P1 == "Put Item" ==> Q
+    P2 == "Put Item" ==> Q
+    Q == "Get Item" ==> C1
+    Q == "Get Item" ==> C2
+
+    class Q queue
+    class P1,P2 prod
+    class C1,C2 cons
 ```
